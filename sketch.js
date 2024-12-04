@@ -9,7 +9,7 @@ let points = [
   math.matrix([-50, 50, 50]),
 ];
 
-let projection = math.matrix([
+let orthographicProjection = math.matrix([
   [1, 0, 0],
   [0, 1, 0],
 ]);
@@ -71,13 +71,26 @@ function draw() {
     return math.multiply(rotationZ, p);
   });
 
+  // Orthgraphic 2d project
+  // projectedPoints = rotatedPoints.map((p) => {
+  //   return math.multiply(orthographicProjection, p);
+  // });
+
+  // Perspective 2d project
+  let distance = 4;
   projectedPoints = rotatedPoints.map((p) => {
-    return math.multiply(projection, p);
+    let zScale = 1 / (distance - p.get([2]));
+    let perspectiveProjection = math.matrix([
+      [zScale, 0, 0],
+      [0, zScale, 0],
+    ]);
+    return math.multiply(orthographicProjection, p);
   });
 
-  projectedPoints.forEach((p) => {
-    // print(p.toString());
+  // scaledPoints = math.multiply(2, projectedPoints);
+  // console.log(scaledPoints.size());
 
+  projectedPoints.forEach((p) => {
     let x = p.get([0]);
     let y = p.get([1]);
     point(x, y);
