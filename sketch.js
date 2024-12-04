@@ -1,6 +1,23 @@
+let points = [
+  math.matrix([-50, -50, -50]),
+  math.matrix([50, -50, -50]),
+  math.matrix([50, 50, -50]),
+  math.matrix([-50, 50, -50]),
+  math.matrix([-50, -50, 50]),
+  math.matrix([50, -50, 50]),
+  math.matrix([50, 50, 50]),
+  math.matrix([-50, 50, 50]),
+];
+
+let projection = math.matrix([
+  [1, 0, 0],
+  [0, 1, 0],
+]);
+
+let angle = 0;
+
 function setup() {
   createCanvas(400, 600);
-  background(220);
 
   // beginRecordSVG(this, "hello.svg");
   // line(20, 20, width - 20, height - 20);
@@ -9,45 +26,49 @@ function setup() {
 
   // noLoop();
 
-  let points = [
-    math.matrix([-50, -50, 0]),
-    math.matrix([50, -50, 0]),
-    math.matrix([50, 50, 0]),
-    math.matrix([-50, 50, 0]),
-  ];
+  // console.log("3D points");
+  // points.forEach((point) => {
+  //   console.log(point.toString());
+  // });
 
-  let angle = PI / 4;
-  let rotation = math.matrix([
+  stroke(0);
+  strokeWeight(10);
+}
+
+function draw() {
+  background(220);
+  translate(width / 2, height / 2);
+
+  angle += 0.02;
+
+  let rotationX = math.matrix([
+    [1, 0, 0],
+    [0, cos(angle), -sin(angle)],
+    [0, sin(angle), cos(angle)],
+  ]);
+
+  let rotationY = math.matrix([
+    [cos(angle), 0, -sin(angle)],
+    [0, 1, 0],
+    [sin(angle), 0, cos(angle)],
+  ]);
+
+  let rotationZ = math.matrix([
     [cos(angle), -sin(angle), 0],
     [sin(angle), cos(angle), 0],
     [0, 0, 1],
   ]);
 
-  let projection = math.matrix([
-    [1, 0, 0],
-    [0, 1, 0],
-  ]);
-
-  console.log("3D points");
-  points.forEach((point) => {
-    console.log(point.toString());
-  });
-
   rotatedPoints = points.map((p) => {
-    return math.multiply(rotation, p);
+    return math.multiply(rotationY, p);
   });
 
   projectedPoints = rotatedPoints.map((p) => {
     return math.multiply(projection, p);
   });
 
-  stroke(0);
-  strokeWeight(10);
-  translate(width / 2, height / 2);
-
-  console.log("Projected points");
   projectedPoints.forEach((p) => {
-    print(p.toString());
+    // print(p.toString());
 
     let x = p.get([0]);
     let y = p.get([1]);
