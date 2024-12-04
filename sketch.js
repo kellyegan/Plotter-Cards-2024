@@ -9,12 +9,48 @@ function setup() {
 
   // noLoop();
 
+  let points = [
+    math.matrix([-50, -50, 0]),
+    math.matrix([50, -50, 0]),
+    math.matrix([50, 50, 0]),
+    math.matrix([-50, 50, 0]),
+  ];
+
+  let angle = PI / 4;
+  let rotation = math.matrix([
+    [cos(angle), -sin(angle), 0],
+    [sin(angle), cos(angle), 0],
+    [0, 0, 1],
+  ]);
+
   let projection = math.matrix([
     [1, 0, 0],
     [0, 1, 0],
   ]);
 
-  let point = math.matrix([100, 75, 50]);
-  let projectedPoint = math.multiply(projection, point);
-  console.log(projectedPoint);
+  console.log("3D points");
+  points.forEach((point) => {
+    console.log(point.toString());
+  });
+
+  rotatedPoints = points.map((p) => {
+    return math.multiply(rotation, p);
+  });
+
+  projectedPoints = rotatedPoints.map((p) => {
+    return math.multiply(projection, p);
+  });
+
+  stroke(0);
+  strokeWeight(10);
+  translate(width / 2, height / 2);
+
+  console.log("Projected points");
+  projectedPoints.forEach((p) => {
+    print(p.toString());
+
+    let x = p.get([0]);
+    let y = p.get([1]);
+    point(x, y);
+  });
 }
