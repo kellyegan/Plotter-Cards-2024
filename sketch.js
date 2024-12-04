@@ -84,6 +84,7 @@ function draw() {
       [zScale, 0, 0],
       [0, zScale, 0],
     ]);
+
     return math.multiply(orthographicProjection, p);
   });
 
