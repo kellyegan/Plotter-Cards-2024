@@ -60,7 +60,15 @@ function draw() {
   ]);
 
   rotatedPoints = points.map((p) => {
+    return math.multiply(rotationX, p);
+  });
+
+  rotatedPoints = rotatedPoints.map((p) => {
     return math.multiply(rotationY, p);
+  });
+
+  rotatedPoints = rotatedPoints.map((p) => {
+    return math.multiply(rotationZ, p);
   });
 
   projectedPoints = rotatedPoints.map((p) => {
