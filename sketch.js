@@ -9,19 +9,12 @@ function setup() {
 
   // noLoop();
 
-  let projection = [
+  let projection = math.matrix([
     [1, 0, 0],
     [0, 1, 0],
-  ];
+  ]);
 
-  let point = [[100, 75, 50]];
-
-  let projectedPoint = matmul(projection, point);
-
+  let point = math.matrix([100, 75, 50]);
+  let projectedPoint = math.multiply(projection, point);
   console.log(projectedPoint);
-}
-
-function matmul(matA, matB) {
-  let result = [];
-  return result;
 }
