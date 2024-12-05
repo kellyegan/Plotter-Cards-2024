@@ -14,8 +14,9 @@ let orthographicProjection = math.matrix([
   [0, 1, 0],
 ]);
 
-let leftCamera = math.matrix([-0.05, 0, -1]);
-let rightCamera = math.matrix([0.05, 0, -1]);
+let eyeSpacing = 0.08;
+let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1]);
+let rightCamera = math.matrix([eyeSpacing / 2, 0, -1]);
 
 let angle = 0;
 
