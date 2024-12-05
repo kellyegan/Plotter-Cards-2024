@@ -195,6 +195,7 @@ class Cube extends Mesh {
 
     this.size = size;
 
+    // Generate vertices
     for (let i = 0; i < 2; i++) {
       for (let j = 0; j < 4; j++) {
         let x = -this.size / 2 + ((this.size * Math.floor((j + 1) / 2)) % 2);
@@ -204,5 +205,21 @@ class Cube extends Mesh {
         this.vertices.push(math.matrix([x, y, z]));
       }
     }
+
+    //Generate edges
+    this.edges = [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 0],
+      [4, 5],
+      [5, 6],
+      [6, 7],
+      [7, 4],
+      [0, 4],
+      [1, 5],
+      [2, 6],
+      [3, 7],
+    ];
   }
 }
