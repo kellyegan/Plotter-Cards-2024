@@ -14,6 +14,9 @@ let orthographicProjection = math.matrix([
   [0, 1, 0],
 ]);
 
+let leftCamera = math.matrix([-0.05, 0, -1]);
+let rightCamera = math.matrix([0.05, 0, -1]);
+
 let angle = 0;
 
 function setup() {
@@ -36,7 +39,7 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(0);
   translate(width / 2, height / 2);
 
   angle += 0.02;
@@ -76,9 +79,17 @@ function draw() {
   //   return math.multiply(orthographicProjection, p);
   // });
 
+  let distance = 0.5;
+
+  // Left camera
+  stroke("red");
+  let leftCameraPoints = rotatedPoints.map((p) => {
+    return math.add(p, leftCamera);
+  });
+
   // Weak perspective 2d project
-  let distance = 2;
-  projectedPoints = rotatedPoints.map((p) => {
+
+  projectedPoints = leftCameraPoints.map((p) => {
     let zScale = 1 / (distance - p.get([2]));
     let perspectiveProjection = math.matrix([
       [zScale, 0, 0],
@@ -109,17 +120,55 @@ function draw() {
   connect(projectedPoints[3], projectedPoints[7]);
 
   strokeWeight(5);
-  for(let i = 0; i < projectedPoints.length; i++) {
+  for (let i = 0; i < projectedPoints.length; i++) {
     let x = projectedPoints[i].get([0]);
     let y = projectedPoints[i].get([1]);
     point(x, y);
   }
 
-  // projectedPoints.forEach((p) => {
-  //   let x = p.get([0]);
-  //   let y = p.get([1]);
-  //   point(x, y);
-  // });
+  // Left camera
+  stroke("cyan");
+  let rightCameraPoints = rotatedPoints.map((p) => {
+    return math.add(p, rightCamera);
+  });
+
+  // Weak perspective 2d project
+  projectedPoints = rightCameraPoints.map((p) => {
+    let zScale = 1 / (distance - p.get([2]));
+    let perspectiveProjection = math.matrix([
+      [zScale, 0, 0],
+      [0, zScale, 0],
+    ]);
+
+    const projected = math.multiply(perspectiveProjection, p);
+
+    return math.multiply(projected, 200);
+  });
+
+  // scaledPoints = math.multiply(2, projectedPoints);
+  // console.log(scaledPoints.size());
+  strokeWeight(1);
+  connect(projectedPoints[0], projectedPoints[1]);
+  connect(projectedPoints[1], projectedPoints[2]);
+  connect(projectedPoints[2], projectedPoints[3]);
+  connect(projectedPoints[3], projectedPoints[0]);
+
+  connect(projectedPoints[4], projectedPoints[5]);
+  connect(projectedPoints[5], projectedPoints[6]);
+  connect(projectedPoints[6], projectedPoints[7]);
+  connect(projectedPoints[7], projectedPoints[4]);
+
+  connect(projectedPoints[0], projectedPoints[4]);
+  connect(projectedPoints[1], projectedPoints[5]);
+  connect(projectedPoints[2], projectedPoints[6]);
+  connect(projectedPoints[3], projectedPoints[7]);
+
+  strokeWeight(5);
+  for (let i = 0; i < projectedPoints.length; i++) {
+    let x = projectedPoints[i].get([0]);
+    let y = projectedPoints[i].get([1]);
+    point(x, y);
+  }
 }
 
 function connect(a, b) {
