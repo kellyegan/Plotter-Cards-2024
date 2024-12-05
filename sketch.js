@@ -32,7 +32,7 @@ function setup() {
   // });
 
   stroke(0);
-  strokeWeight(10);
+  strokeWeight(5);
 }
 
 function draw() {
@@ -76,7 +76,7 @@ function draw() {
   //   return math.multiply(orthographicProjection, p);
   // });
 
-  // Perspective 2d project
+  // Weak perspective 2d project
   let distance = 2;
   projectedPoints = rotatedPoints.map((p) => {
     let zScale = 1 / (distance - p.get([2]));
@@ -92,10 +92,36 @@ function draw() {
 
   // scaledPoints = math.multiply(2, projectedPoints);
   // console.log(scaledPoints.size());
+  strokeWeight(1);
+  connect(projectedPoints[0], projectedPoints[1]);
+  connect(projectedPoints[1], projectedPoints[2]);
+  connect(projectedPoints[2], projectedPoints[3]);
+  connect(projectedPoints[3], projectedPoints[0]);
 
-  projectedPoints.forEach((p) => {
-    let x = p.get([0]);
-    let y = p.get([1]);
+  connect(projectedPoints[4], projectedPoints[5]);
+  connect(projectedPoints[5], projectedPoints[6]);
+  connect(projectedPoints[6], projectedPoints[7]);
+  connect(projectedPoints[7], projectedPoints[4]);
+
+  connect(projectedPoints[0], projectedPoints[4]);
+  connect(projectedPoints[1], projectedPoints[5]);
+  connect(projectedPoints[2], projectedPoints[6]);
+  connect(projectedPoints[3], projectedPoints[7]);
+
+  strokeWeight(5);
+  for(let i = 0; i < projectedPoints.length; i++) {
+    let x = projectedPoints[i].get([0]);
+    let y = projectedPoints[i].get([1]);
     point(x, y);
-  });
+  }
+
+  // projectedPoints.forEach((p) => {
+  //   let x = p.get([0]);
+  //   let y = p.get([1]);
+  //   point(x, y);
+  // });
+}
+
+function connect(a, b) {
+  line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
 }
