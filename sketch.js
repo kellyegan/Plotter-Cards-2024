@@ -22,6 +22,7 @@ let angle = 0;
 
 function setup() {
   createCanvas(400, 600);
+  let cube = new Cube(1);
 
   // beginRecordSVG(this, "hello.svg");
   // line(20, 20, width - 20, height - 20);
@@ -174,4 +175,34 @@ function draw() {
 
 function connect(a, b) {
   line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
+}
+
+class Mesh {
+  vertices;
+  edges;
+
+  constructor() {
+    this.vertices = [];
+    this.edges = [];
+  }
+}
+
+class Cube extends Mesh {
+  size;
+
+  constructor(size) {
+    super();
+
+    this.size = size;
+
+    for (let i = 0; i < 2; i++) {
+      for (let j = 0; j < 4; j++) {
+        let x = -this.size / 2 + ((this.size * Math.floor((j + 1) / 2)) % 2);
+        let y = -this.size / 2 + ((this.size * Math.floor(j / 2)) % 2);
+        let z = -this.size / 2 + this.size * i;
+
+        this.vertices.push(math.matrix([x, y, z]));
+      }
+    }
+  }
 }
