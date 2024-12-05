@@ -1,12 +1,12 @@
 let points = [
-  math.matrix([-50, -50, -50]),
-  math.matrix([50, -50, -50]),
-  math.matrix([50, 50, -50]),
-  math.matrix([-50, 50, -50]),
-  math.matrix([-50, -50, 50]),
-  math.matrix([50, -50, 50]),
-  math.matrix([50, 50, 50]),
-  math.matrix([-50, 50, 50]),
+  math.matrix([-0.5, -0.5, -0.5]),
+  math.matrix([0.5, -0.5, -0.5]),
+  math.matrix([0.5, 0.5, -0.5]),
+  math.matrix([-0.5, 0.5, -0.5]),
+  math.matrix([-0.5, -0.5, 0.5]),
+  math.matrix([0.5, -0.5, 0.5]),
+  math.matrix([0.5, 0.5, 0.5]),
+  math.matrix([-0.5, 0.5, 0.5]),
 ];
 
 let orthographicProjection = math.matrix([
@@ -77,7 +77,7 @@ function draw() {
   // });
 
   // Perspective 2d project
-  let distance = 4;
+  let distance = 2;
   projectedPoints = rotatedPoints.map((p) => {
     let zScale = 1 / (distance - p.get([2]));
     let perspectiveProjection = math.matrix([
@@ -85,7 +85,9 @@ function draw() {
       [0, zScale, 0],
     ]);
 
-    return math.multiply(orthographicProjection, p);
+    const projected = math.multiply(perspectiveProjection, p);
+
+    return math.multiply(projected, 200);
   });
 
   // scaledPoints = math.multiply(2, projectedPoints);
