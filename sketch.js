@@ -12,13 +12,17 @@ let points = [
 let scene;
 
 let eyeSpacing = 0.04;
-let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1.75, 1]);
-let rightCamera = math.matrix([eyeSpacing / 2, 0, -1.75, 1]);
+
+let leftCamera;
+let rightCamera;
 
 let angle = 0;
 
 function setup() {
   createCanvas(600, 900);
+
+  leftCamera = new Camera(-eyeSpacing / 2, 0, -1.75, 1);
+  rightCamera = new Camera(eyeSpacing / 2, 0, -1.75, 1);
 
   scene = new Scene();
 
@@ -101,7 +105,7 @@ class Mesh {
 
     // 2. Transform points in relation to camera
     const cameraRelativeVerts = transformedVerts.map((p) => {
-      return math.add(p, camera);
+      return math.add(p, camera.transform);
     });
 
     // 3. Project to 2D (using weak perspective)
@@ -170,6 +174,14 @@ class Cube extends Mesh {
   }
 }
 
+class Camera {
+  transform;
+
+  constructor(x = 0, y = 0, z = -1) {
+    this.transform = math.matrix([x, y, z, 1]);
+  }
+}
+
 class Scene {
   objects;
   cameras;
@@ -231,8 +243,4 @@ class Scene {
 
     this.transform = math.multiply(this.transform, rotationZ);
   }
-}
-
-class Camera {
-  constructor(x, y, z) {}
 }
