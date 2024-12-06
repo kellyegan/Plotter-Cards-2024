@@ -9,10 +9,7 @@ let points = [
   math.matrix([-0.5, 0.5, 0.5, 1]),
 ];
 
-// let orthographicProjection = math.matrix([
-//   [1, 0, 0],
-//   [0, 1, 0],
-// ]);
+let scene;
 
 let eyeSpacing = 0.04;
 let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1, 1]);
@@ -22,14 +19,16 @@ let angle = 0;
 
 function setup() {
   createCanvas(600, 900);
-  let cube = new Cube(1);
+
+  scene = new Scene();
+  scene.add(new Cube(1));
 
   // beginRecordSVG(this, "hello.svg");
   // line(20, 20, width - 20, height - 20);
   // line(20, height - 20, width - 20, 20);
   // endRecordSVG();
 
-  stroke(0);
+  stroke(255);
   strokeWeight(5);
 }
 
@@ -37,28 +36,28 @@ function draw() {
   blendMode(BLEND);
   background(0);
   translate(width / 2, height / 2);
- 
+
   angle += 0.02;
 
   let rotationX = math.matrix([
     [1, 0, 0, 0],
     [0, cos(angle), -sin(angle), 0],
     [0, sin(angle), cos(angle), 0],
-    [0, 0, 0, 1]
+    [0, 0, 0, 1],
   ]);
 
   let rotationY = math.matrix([
     [cos(angle), 0, -sin(angle), 0],
     [0, 1, 0, 0],
     [sin(angle), 0, cos(angle), 0],
-    [0, 0, 0, 1]
+    [0, 0, 0, 1],
   ]);
 
   let rotationZ = math.matrix([
     [cos(angle), -sin(angle), 0, 0],
     [sin(angle), cos(angle), 0, 0],
     [0, 0, 1, 0],
-    [0, 0, 0, 1]
+    [0, 0, 0, 1],
   ]);
 
   transform = math.identity(4, 4);
@@ -70,102 +69,12 @@ function draw() {
     return math.multiply(transform, p);
   });
 
-
-  // Orthgraphic 2d project
-  // projectedPoints = rotatedPoints.map((p) => {
-  //   return math.multiply(orthographicProjection, p);
-  // });
-
-  let distance = 0.5;
   blendMode(SCREEN);
-  // Left camera
   stroke("cyan");
-  let leftCameraPoints = rotatedPoints.map((p) => {
-    return math.add(p, leftCamera);
-  });
+  scene.render(leftCamera, 0.5);
 
-  // Weak perspective 2d project
-
-  projectedPoints = leftCameraPoints.map((p) => {
-    let zScale = 1 / (distance - p.get([2]));
-    let perspectiveProjection = math.matrix([
-      [zScale, 0, 0, 0],
-      [0, zScale, 0, 0],
-    ]);
-
-    const projected = math.multiply(perspectiveProjection, p);
-
-    return math.multiply(projected, 200);
-  });
-
-  // scaledPoints = math.multiply(2, projectedPoints);
-  // console.log(scaledPoints.size());
-  strokeWeight(3);
-  connect(projectedPoints[0], projectedPoints[1]);
-  connect(projectedPoints[1], projectedPoints[2]);
-  connect(projectedPoints[2], projectedPoints[3]);
-  connect(projectedPoints[3], projectedPoints[0]);
-
-  connect(projectedPoints[4], projectedPoints[5]);
-  connect(projectedPoints[5], projectedPoints[6]);
-  connect(projectedPoints[6], projectedPoints[7]);
-  connect(projectedPoints[7], projectedPoints[4]);
-
-  connect(projectedPoints[0], projectedPoints[4]);
-  connect(projectedPoints[1], projectedPoints[5]);
-  connect(projectedPoints[2], projectedPoints[6]);
-  connect(projectedPoints[3], projectedPoints[7]);
-
-  strokeWeight(5);
-  for (let i = 0; i < projectedPoints.length; i++) {
-    let x = projectedPoints[i].get([0]);
-    let y = projectedPoints[i].get([1]);
-    point(x, y);
-  }
-
-  // Left camera
   stroke("red");
-  let rightCameraPoints = rotatedPoints.map((p) => {
-    return math.add(p, rightCamera);
-  });
-
-  // Weak perspective 2d project
-  projectedPoints = rightCameraPoints.map((p) => {
-    let zScale = 1 / (distance - p.get([2]));
-    let perspectiveProjection = math.matrix([
-      [zScale, 0, 0, 0],
-      [0, zScale, 0, 0],
-    ]);
-
-    const projected = math.multiply(perspectiveProjection, p);
-
-    return math.multiply(projected, 200);
-  });
-
-  // scaledPoints = math.multiply(2, projectedPoints);
-  // console.log(scaledPoints.size());
-  strokeWeight(3);
-  connect(projectedPoints[0], projectedPoints[1]);
-  connect(projectedPoints[1], projectedPoints[2]);
-  connect(projectedPoints[2], projectedPoints[3]);
-  connect(projectedPoints[3], projectedPoints[0]);
-
-  connect(projectedPoints[4], projectedPoints[5]);
-  connect(projectedPoints[5], projectedPoints[6]);
-  connect(projectedPoints[6], projectedPoints[7]);
-  connect(projectedPoints[7], projectedPoints[4]);
-
-  connect(projectedPoints[0], projectedPoints[4]);
-  connect(projectedPoints[1], projectedPoints[5]);
-  connect(projectedPoints[2], projectedPoints[6]);
-  connect(projectedPoints[3], projectedPoints[7]);
-
-  strokeWeight(5);
-  for (let i = 0; i < projectedPoints.length; i++) {
-    let x = projectedPoints[i].get([0]);
-    let y = projectedPoints[i].get([1]);
-    point(x, y);
-  }
+  scene.render(rightCamera, 0.5);
 }
 
 function connect(a, b) {
@@ -175,10 +84,73 @@ function connect(a, b) {
 class Mesh {
   vertices;
   edges;
+  transform;
 
   constructor() {
     this.vertices = [];
     this.edges = [];
+    this.transform = math.identity(4, 4);
+  }
+
+  projectOrtho() {
+    // 1. Apply object transform
+    const transformedVerts = this.vertices.map((v) => {
+      return math.multiply(this.transform, v);
+    });
+
+    // 2. Apply orthographic projection
+    let orthographicProjection = math.matrix([
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+    ]);
+    projectedVerts = transformedVerts.map((p) => {
+      return math.multiply(orthographicProjection, p);
+    });
+
+    // 4. Scale up verts (this could be done better)
+    const scaledVerts = projectedVerts.map((v) => {
+      return math.multiply(v, 200);
+    });
+
+    return scaledVerts;
+  }
+
+  projectPerspective(camera, distance) {
+    // 1. Apply object transform
+    const transformedVerts = this.vertices.map((v) => {
+      return math.multiply(this.transform, v);
+    });
+
+    // 2. Transform points in relation to camera
+    const cameraRelativeVerts = transformedVerts.map((p) => {
+      return math.add(p, camera);
+    });
+
+    // 3. Project to 2D (using weak perspective)
+    const projectedVerts = cameraRelativeVerts.map((v) => {
+      let zScale = 1 / (distance - v.get([2]));
+      let perspectiveProjection = math.matrix([
+        [zScale, 0, 0, 0],
+        [0, zScale, 0, 0],
+      ]);
+
+      return math.multiply(perspectiveProjection, v);
+    });
+
+    // 4. Scale up verts (this could be done better)
+    const scaledVerts = projectedVerts.map((v) => {
+      return math.multiply(v, 200);
+    });
+
+    return scaledVerts;
+  }
+
+  render(camera, distance) {
+    const projectedVerts = this.projectPerspective(camera, distance);
+    //Draw edges between projected vertices
+    this.edges.forEach((edge) => {
+      connect(projectedVerts[edge[0]], projectedVerts[edge[1]]);
+    });
   }
 }
 
@@ -197,7 +169,7 @@ class Cube extends Mesh {
         let y = -this.size / 2 + ((this.size * Math.floor(j / 2)) % 2);
         let z = -this.size / 2 + this.size * i;
 
-        this.vertices.push(math.matrix([x, y, z]));
+        this.vertices.push(math.matrix([x, y, z, 1]));
       }
     }
 
@@ -228,12 +200,18 @@ class Scene {
   constructor() {
     this.objects = [];
     this.cameras = [];
-    this.transform = math.identity(4,4);
+    this.transform = math.identity(4, 4);
     this.stack = [];
   }
 
-  add( shape ) {
+  add(shape) {
     this.objects.push(shape);
+  }
+
+  render(camera, distance) {
+    this.objects.forEach((object) => {
+      object.render(camera, distance);
+    });
   }
 
   rotateX(angle) {
@@ -241,7 +219,7 @@ class Scene {
       [1, 0, 0, 0],
       [0, cos(angle), -sin(angle), 0],
       [0, sin(angle), cos(angle), 0],
-      [0, 0, 0, 1]
+      [0, 0, 0, 1],
     ]);
 
     this.transform = math.multiply(this.transform, rotationX);
@@ -252,7 +230,7 @@ class Scene {
       [cos(angle), 0, -sin(angle), 0],
       [0, 1, 0, 0],
       [sin(angle), 0, cos(angle), 0],
-      [0, 0, 0, 1]
+      [0, 0, 0, 1],
     ]);
 
     this.transform = math.multiply(this.transform, rotationY);
@@ -263,7 +241,7 @@ class Scene {
       [cos(angle), -sin(angle), 0, 0],
       [sin(angle), cos(angle), 0, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 1]
+      [0, 0, 0, 1],
     ]);
 
     this.transform = math.multiply(this.transform, rotationZ);
