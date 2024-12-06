@@ -14,14 +14,14 @@ let orthographicProjection = math.matrix([
   [0, 1, 0],
 ]);
 
-let eyeSpacing = 0.08;
+let eyeSpacing = 0.04;
 let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1]);
 let rightCamera = math.matrix([eyeSpacing / 2, 0, -1]);
 
 let angle = 0;
 
 function setup() {
-  createCanvas(400, 600);
+  createCanvas(600, 900);
   let cube = new Cube(1);
 
   // beginRecordSVG(this, "hello.svg");
@@ -41,6 +41,7 @@ function setup() {
 }
 
 function draw() {
+  blendMode(BLEND);
   background(0);
   translate(width / 2, height / 2);
 
@@ -82,7 +83,7 @@ function draw() {
   // });
 
   let distance = 0.5;
-
+  blendMode(SCREEN);
   // Left camera
   stroke("red");
   let leftCameraPoints = rotatedPoints.map((p) => {
@@ -105,7 +106,7 @@ function draw() {
 
   // scaledPoints = math.multiply(2, projectedPoints);
   // console.log(scaledPoints.size());
-  strokeWeight(1);
+  strokeWeight(3);
   connect(projectedPoints[0], projectedPoints[1]);
   connect(projectedPoints[1], projectedPoints[2]);
   connect(projectedPoints[2], projectedPoints[3]);
@@ -149,7 +150,7 @@ function draw() {
 
   // scaledPoints = math.multiply(2, projectedPoints);
   // console.log(scaledPoints.size());
-  strokeWeight(1);
+  strokeWeight(3);
   connect(projectedPoints[0], projectedPoints[1]);
   connect(projectedPoints[1], projectedPoints[2]);
   connect(projectedPoints[2], projectedPoints[3]);
