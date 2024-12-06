@@ -12,8 +12,8 @@ let points = [
 let scene;
 
 let eyeSpacing = 0.04;
-let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1, 1]);
-let rightCamera = math.matrix([eyeSpacing / 2, 0, -1, 1]);
+let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1.75, 1]);
+let rightCamera = math.matrix([eyeSpacing / 2, 0, -1.75, 1]);
 
 let angle = 0;
 
@@ -21,7 +21,6 @@ function setup() {
   createCanvas(600, 900);
 
   scene = new Scene();
-  scene.add(new Cube(1));
 
   // beginRecordSVG(this, "hello.svg");
   // line(20, 20, width - 20, height - 20);
@@ -29,7 +28,7 @@ function setup() {
   // endRecordSVG();
 
   stroke(255);
-  strokeWeight(5);
+  strokeWeight(2);
 }
 
 function draw() {
@@ -38,43 +37,18 @@ function draw() {
   translate(width / 2, height / 2);
 
   angle += 0.02;
-
-  let rotationX = math.matrix([
-    [1, 0, 0, 0],
-    [0, cos(angle), -sin(angle), 0],
-    [0, sin(angle), cos(angle), 0],
-    [0, 0, 0, 1],
-  ]);
-
-  let rotationY = math.matrix([
-    [cos(angle), 0, -sin(angle), 0],
-    [0, 1, 0, 0],
-    [sin(angle), 0, cos(angle), 0],
-    [0, 0, 0, 1],
-  ]);
-
-  let rotationZ = math.matrix([
-    [cos(angle), -sin(angle), 0, 0],
-    [sin(angle), cos(angle), 0, 0],
-    [0, 0, 1, 0],
-    [0, 0, 0, 1],
-  ]);
-
-  transform = math.identity(4, 4);
-  transform = math.multiply(transform, rotationX);
-  transform = math.multiply(transform, rotationY);
-  transform = math.multiply(transform, rotationZ);
-
-  rotatedPoints = points.map((p) => {
-    return math.multiply(transform, p);
-  });
+  scene.reset();
+  scene.rotateX(angle);
+  scene.rotateY(angle);
+  scene.rotateZ(angle);
+  scene.add(new Cube(1));
 
   blendMode(SCREEN);
   stroke("cyan");
-  scene.render(leftCamera, 0.5);
+  scene.render(leftCamera, 1);
 
   stroke("red");
-  scene.render(rightCamera, 0.5);
+  scene.render(rightCamera, 0.1);
 }
 
 function connect(a, b) {
@@ -90,6 +64,10 @@ class Mesh {
     this.vertices = [];
     this.edges = [];
     this.transform = math.identity(4, 4);
+  }
+
+  applyTransform(transform) {
+    this.transform = math.multiply(this.transform, transform);
   }
 
   projectOrtho() {
@@ -115,7 +93,7 @@ class Mesh {
     return scaledVerts;
   }
 
-  projectPerspective(camera, distance) {
+  projectPerspective(camera) {
     // 1. Apply object transform
     const transformedVerts = this.vertices.map((v) => {
       return math.multiply(this.transform, v);
@@ -127,8 +105,9 @@ class Mesh {
     });
 
     // 3. Project to 2D (using weak perspective)
+    const focalLength = 2;
     const projectedVerts = cameraRelativeVerts.map((v) => {
-      let zScale = 1 / (distance - v.get([2]));
+      let zScale = focalLength / v.get([2]);
       let perspectiveProjection = math.matrix([
         [zScale, 0, 0, 0],
         [0, zScale, 0, 0],
@@ -145,8 +124,8 @@ class Mesh {
     return scaledVerts;
   }
 
-  render(camera, distance) {
-    const projectedVerts = this.projectPerspective(camera, distance);
+  render(camera) {
+    const projectedVerts = this.projectPerspective(camera);
     //Draw edges between projected vertices
     this.edges.forEach((edge) => {
       connect(projectedVerts[edge[0]], projectedVerts[edge[1]]);
@@ -204,13 +183,19 @@ class Scene {
     this.stack = [];
   }
 
+  reset() {
+    this.objects = [];
+    this.transform = math.identity(4, 4);
+  }
+
   add(shape) {
+    shape.applyTransform(this.transform);
     this.objects.push(shape);
   }
 
-  render(camera, distance) {
+  render(camera) {
     this.objects.forEach((object) => {
-      object.render(camera, distance);
+      object.render(camera);
     });
   }
 
@@ -246,4 +231,8 @@ class Scene {
 
     this.transform = math.multiply(this.transform, rotationZ);
   }
+}
+
+class Camera {
+  constructor(x, y, z) {}
 }
