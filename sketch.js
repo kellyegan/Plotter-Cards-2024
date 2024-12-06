@@ -222,10 +222,14 @@ class Cube extends Mesh {
 class Scene {
   objects;
   cameras;
+  transform;
+  stack;
 
   constructor() {
     this.objects = [];
     this.cameras = [];
+    this.transform = math.identity(4,4);
+    this.stack = [];
   }
 
   add( shape ) {
