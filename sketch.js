@@ -235,4 +235,37 @@ class Scene {
   add( shape ) {
     this.objects.push(shape);
   }
+
+  rotateX(angle) {
+    let rotationX = math.matrix([
+      [1, 0, 0, 0],
+      [0, cos(angle), -sin(angle), 0],
+      [0, sin(angle), cos(angle), 0],
+      [0, 0, 0, 1]
+    ]);
+
+    this.transform = math.multiply(this.transform, rotationX);
+  }
+
+  rotateY(angle) {
+    let rotationY = math.matrix([
+      [cos(angle), 0, -sin(angle), 0],
+      [0, 1, 0, 0],
+      [sin(angle), 0, cos(angle), 0],
+      [0, 0, 0, 1]
+    ]);
+
+    this.transform = math.multiply(this.transform, rotationY);
+  }
+
+  rotateZ(angle) {
+    let rotationZ = math.matrix([
+      [cos(angle), -sin(angle), 0, 0],
+      [sin(angle), cos(angle), 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1]
+    ]);
+
+    this.transform = math.multiply(this.transform, rotationZ);
+  }
 }
