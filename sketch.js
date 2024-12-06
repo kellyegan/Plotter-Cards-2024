@@ -1,22 +1,22 @@
 let points = [
-  math.matrix([-0.5, -0.5, -0.5]),
-  math.matrix([0.5, -0.5, -0.5]),
-  math.matrix([0.5, 0.5, -0.5]),
-  math.matrix([-0.5, 0.5, -0.5]),
-  math.matrix([-0.5, -0.5, 0.5]),
-  math.matrix([0.5, -0.5, 0.5]),
-  math.matrix([0.5, 0.5, 0.5]),
-  math.matrix([-0.5, 0.5, 0.5]),
+  math.matrix([-0.5, -0.5, -0.5, 1]),
+  math.matrix([0.5, -0.5, -0.5, 1]),
+  math.matrix([0.5, 0.5, -0.5, 1]),
+  math.matrix([-0.5, 0.5, -0.5, 1]),
+  math.matrix([-0.5, -0.5, 0.5, 1]),
+  math.matrix([0.5, -0.5, 0.5, 1]),
+  math.matrix([0.5, 0.5, 0.5, 1]),
+  math.matrix([-0.5, 0.5, 0.5, 1]),
 ];
 
-let orthographicProjection = math.matrix([
-  [1, 0, 0],
-  [0, 1, 0],
-]);
+// let orthographicProjection = math.matrix([
+//   [1, 0, 0],
+//   [0, 1, 0],
+// ]);
 
 let eyeSpacing = 0.04;
-let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1]);
-let rightCamera = math.matrix([eyeSpacing / 2, 0, -1]);
+let leftCamera = math.matrix([-eyeSpacing / 2, 0, -1, 1]);
+let rightCamera = math.matrix([eyeSpacing / 2, 0, -1, 1]);
 
 let angle = 0;
 
@@ -41,24 +41,27 @@ function draw() {
   angle += 0.02;
 
   let rotationX = math.matrix([
-    [1, 0, 0],
-    [0, cos(angle), -sin(angle)],
-    [0, sin(angle), cos(angle)],
+    [1, 0, 0, 0],
+    [0, cos(angle), -sin(angle), 0],
+    [0, sin(angle), cos(angle), 0],
+    [0, 0, 0, 1]
   ]);
 
   let rotationY = math.matrix([
-    [cos(angle), 0, -sin(angle)],
-    [0, 1, 0],
-    [sin(angle), 0, cos(angle)],
+    [cos(angle), 0, -sin(angle), 0],
+    [0, 1, 0, 0],
+    [sin(angle), 0, cos(angle), 0],
+    [0, 0, 0, 1]
   ]);
 
   let rotationZ = math.matrix([
-    [cos(angle), -sin(angle), 0],
-    [sin(angle), cos(angle), 0],
-    [0, 0, 1],
+    [cos(angle), -sin(angle), 0, 0],
+    [sin(angle), cos(angle), 0, 0],
+    [0, 0, 1, 0],
+    [0, 0, 0, 1]
   ]);
 
-  transform = math.identity(3, 3);
+  transform = math.identity(4, 4);
   transform = math.multiply(transform, rotationX);
   transform = math.multiply(transform, rotationY);
   transform = math.multiply(transform, rotationZ);
@@ -86,8 +89,8 @@ function draw() {
   projectedPoints = leftCameraPoints.map((p) => {
     let zScale = 1 / (distance - p.get([2]));
     let perspectiveProjection = math.matrix([
-      [zScale, 0, 0],
-      [0, zScale, 0],
+      [zScale, 0, 0, 0],
+      [0, zScale, 0, 0],
     ]);
 
     const projected = math.multiply(perspectiveProjection, p);
@@ -130,8 +133,8 @@ function draw() {
   projectedPoints = rightCameraPoints.map((p) => {
     let zScale = 1 / (distance - p.get([2]));
     let perspectiveProjection = math.matrix([
-      [zScale, 0, 0],
-      [0, zScale, 0],
+      [zScale, 0, 0, 0],
+      [0, zScale, 0, 0],
     ]);
 
     const projected = math.multiply(perspectiveProjection, p);
