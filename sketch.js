@@ -29,13 +29,6 @@ function setup() {
   // line(20, height - 20, width - 20, 20);
   // endRecordSVG();
 
-  // noLoop();
-
-  // console.log("3D points");
-  // points.forEach((point) => {
-  //   console.log(point.toString());
-  // });
-
   stroke(0);
   strokeWeight(5);
 }
@@ -44,7 +37,7 @@ function draw() {
   blendMode(BLEND);
   background(0);
   translate(width / 2, height / 2);
-
+ 
   angle += 0.02;
 
   let rotationX = math.matrix([
@@ -65,17 +58,15 @@ function draw() {
     [0, 0, 1],
   ]);
 
+  transform = math.identity(3, 3);
+  transform = math.multiply(transform, rotationX);
+  transform = math.multiply(transform, rotationY);
+  transform = math.multiply(transform, rotationZ);
+
   rotatedPoints = points.map((p) => {
-    return math.multiply(rotationX, p);
+    return math.multiply(transform, p);
   });
 
-  rotatedPoints = rotatedPoints.map((p) => {
-    return math.multiply(rotationY, p);
-  });
-
-  rotatedPoints = rotatedPoints.map((p) => {
-    return math.multiply(rotationZ, p);
-  });
 
   // Orthgraphic 2d project
   // projectedPoints = rotatedPoints.map((p) => {
@@ -85,7 +76,7 @@ function draw() {
   let distance = 0.5;
   blendMode(SCREEN);
   // Left camera
-  stroke("red");
+  stroke("cyan");
   let leftCameraPoints = rotatedPoints.map((p) => {
     return math.add(p, leftCamera);
   });
@@ -130,7 +121,7 @@ function draw() {
   }
 
   // Left camera
-  stroke("cyan");
+  stroke("red");
   let rightCameraPoints = rotatedPoints.map((p) => {
     return math.add(p, rightCamera);
   });
@@ -222,5 +213,19 @@ class Cube extends Mesh {
       [2, 6],
       [3, 7],
     ];
+  }
+}
+
+class Scene {
+  objects;
+  cameras;
+
+  constructor() {
+    this.objects = [];
+    this.cameras = [];
+  }
+
+  add( shape ) {
+    this.objects.push(shape);
   }
 }
