@@ -185,6 +185,23 @@ class Scene {
   }
 }
 
+/**
+ * Polyline object made up of multiple line segments in a chain
+ */
+class Polyline extends Mesh {
+  add(x, y, z) {
+    this.vertices.push([x, y, z, 1]);
+    if (this.vertices.length > 1) {
+      this.edges.push([this.vertices.length - 2, this.vertices.length - 1]);
+    }
+  }
+}
+
+/************ PRIMITIVES ************/
+
+/**
+ * Tetrahedron primitive
+ */
 class Tetrahedron extends Mesh {
   size;
 
@@ -213,6 +230,9 @@ class Tetrahedron extends Mesh {
   }
 }
 
+/**
+ * Octahedron primitive
+ */
 class Octahedron extends Mesh {
   size;
 
@@ -249,6 +269,9 @@ class Octahedron extends Mesh {
   }
 }
 
+/**
+ * Cube primative
+ */
 class Cube extends Mesh {
   size;
 
@@ -286,6 +309,9 @@ class Cube extends Mesh {
   }
 }
 
+/**
+ * Icosahedron primitive
+ */
 class Icosahedron extends Mesh {
   size;
 

@@ -39,6 +39,17 @@ function draw() {
   scene.rotateY(angle);
   scene.rotateZ(angle);
 
+  let polyline = new Polyline();
+  polyline.add(1, 0, 0);
+  polyline.add(1, 1, 0); //+y
+  polyline.add(1, 1, 1); //+z
+  polyline.add(2, 1, 1); //+x
+  polyline.add(2, 2, 1); //+y
+  polyline.add(2, 2, 2); //+z
+  polyline.add(3, 2, 2); //+x
+
+  scene.add(polyline);
+
   // scene.add(new Cube(1));
   scene.add(new Dodecahedron(1));
 
