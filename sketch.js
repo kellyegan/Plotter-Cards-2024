@@ -255,4 +255,13 @@ class Scene {
 
     this.transform = math.multiply(this.transform, rotationZ);
   }
+
+  scale(x, y, z) {
+    let translation = math.matrix([
+      [x, 0, 0, 0],
+      [0, y, 0, 0],
+      [0, 0, z, 0],
+      [0, 0, 0, 1],
+    ]);
+  }
 }
