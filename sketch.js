@@ -19,7 +19,7 @@ let rightCamera;
 let angle = 0;
 
 function setup() {
-  createCanvas(600, 900);
+  createCanvas(900, 600);
 
   leftCamera = new Camera(-eyeSpacing / 2, 0, -1.75, 1);
   rightCamera = new Camera(eyeSpacing / 2, 0, -1.75, 1);
@@ -33,27 +33,31 @@ function setup() {
 
   stroke(255);
   strokeWeight(2);
+
+  noLoop();
 }
 
 function draw() {
   blendMode(BLEND);
-  background(0);
+  background(255);
   translate(width / 2, height / 2);
 
-  angle += 0.02;
-  scene.reset();
-  scene.translate(0, cos(angle) * 2, 7 + sin(angle) * 4);
-  scene.rotateX(angle);
-  scene.rotateY(angle);
-  scene.rotateZ(angle);
-  scene.add(new Cube(1));
+  for (let angle = 0; angle < TAU; angle += TAU / 16) {
+    angle += 0.02;
+    scene.reset();
+    scene.translate(cos(angle) * 2, 0, 7.25 + sin(angle) * 4);
+    scene.rotateX(angle);
+    scene.rotateY(angle);
+    scene.rotateZ(angle);
+    scene.add(new Cube(1));
 
-  blendMode(SCREEN);
-  stroke("cyan");
-  scene.render(leftCamera, 1);
+    blendMode(MULTIPLY);
+    stroke("cyan");
+    scene.render(leftCamera, 1);
 
-  stroke("red");
-  scene.render(rightCamera, 0.1);
+    stroke("red");
+    scene.render(rightCamera, 0.1);
+  }
 }
 
 function connect(a, b) {
