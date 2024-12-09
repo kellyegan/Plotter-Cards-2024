@@ -22,8 +22,8 @@ function setup() {
 }
 
 function draw() {
-  // blendMode(BLEND);
-  background(255);
+  blendMode(BLEND);
+  background(0);
 
   // beginRecordSVG(this, "hello.svg");
 
@@ -31,23 +31,23 @@ function draw() {
   // for (let angle = 0; angle < TAU; angle += TAU / 16) {
   angle += 0.02;
   scene.reset();
-  scene.translate(0, 0, 7);
+  scene.translate(0, 0, 5);
   // scene.rotateX(-1.0);
   // scene.translate(cos(angle) * 2.5, sin(angle) * 4, 0);
-  // scene.rotateX(angle);
-  // scene.rotateY(angle);
-  // scene.rotateZ(angle);
+
   scene.rotateX(angle);
   scene.rotateY(angle);
-  scene.add(new Cube(1));
-  scene.add(new Octahedron(1));
+  scene.rotateZ(angle);
 
-  // blendMode(MULTIPLY);
+  // scene.add(new Cube(1));
+  scene.add(new Icosahedron(1));
+
+  blendMode(SCREEN);
   stroke("cyan");
-  scene.render(leftCamera, 1);
+  scene.render(leftCamera, true);
 
   stroke("red");
-  scene.render(rightCamera, 0.1);
+  scene.render(rightCamera, true);
   // }
 
   // endRecordSVG();
@@ -136,8 +136,14 @@ class Mesh {
       });
     }
     if (renderVertices) {
-      this.vertices.forEach((vertex) => {
-        point(vertex[0], vertex[1], vertex[2]);
+      projectedVerts.forEach((vertex, i) => {
+        const x = vertex.get([0]);
+        const y = vertex.get([1]);
+        push();
+        text(i, x + 5, y + 10);
+        strokeWeight(5);
+        point(x, y);
+        pop();
       });
     }
   }
@@ -248,10 +254,60 @@ class Icosahedron extends Mesh {
   size;
 
   constructor(size) {
-    // Generate vertices
-    this.vertices = [[0, size, size * math.phi, 1]];
+    super();
 
-    this.edges = [];
+    const halfsize = size / 2;
+    const halfphi = halfsize * math.phi;
+
+    // Generate vertices
+    this.vertices = [
+      [0, halfsize, halfphi, 1],
+      [0, -halfsize, halfphi, 1],
+      [halfphi, 0, halfsize, 1],
+      [halfsize, halfphi, 0, 1],
+      [-halfsize, halfphi, 0, 1],
+      [-halfphi, 0, halfsize, 1],
+      [0, -halfsize, -halfphi, 1],
+      [0, halfsize, -halfphi, 1],
+      [halfphi, 0, -halfsize, 1],
+      [halfsize, -halfphi, 0, 1],
+      [-halfsize, -halfphi, 0, 1],
+      [-halfphi, 0, -halfsize, 1],
+    ];
+
+    this.edges = [
+      [0, 1],
+      [1, 2],
+      [2, 0],
+      [2, 3],
+      [3, 0],
+      [3, 4],
+      [4, 0],
+      [4, 5],
+      [5, 0],
+      [5, 1],
+      [6, 7],
+      [7, 8],
+      [8, 6],
+      [8, 9],
+      [9, 6],
+      [9, 10],
+      [10, 6],
+      [10, 11],
+      [11, 6],
+      [11, 7],
+      [1, 9],
+      [9, 1],
+      [1, 10],
+      [10, 5],
+      [5, 11],
+      [4, 11],
+      [4, 7],
+      [7, 3],
+      [2, 9],
+      [2, 8],
+      [3, 8],
+    ];
   }
 }
 
