@@ -42,6 +42,7 @@ function draw() {
 
   angle += 0.02;
   scene.reset();
+  scene.translate(0, cos(angle) * 2, 7 + sin(angle) * 4);
   scene.rotateX(angle);
   scene.rotateY(angle);
   scene.rotateZ(angle);
@@ -209,6 +210,17 @@ class Scene {
     this.objects.forEach((object) => {
       object.render(camera);
     });
+  }
+
+  translate(x, y, z) {
+    let translation = math.matrix([
+      [1, 0, 0, x],
+      [0, 1, 0, y],
+      [0, 0, 1, z],
+      [0, 0, 0, 1],
+    ]);
+
+    this.transform = math.multiply(this.transform, translation);
   }
 
   rotateX(angle) {
