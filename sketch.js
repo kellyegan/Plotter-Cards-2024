@@ -1,14 +1,3 @@
-let points = [
-  math.matrix([-0.5, -0.5, -0.5, 1]),
-  math.matrix([0.5, -0.5, -0.5, 1]),
-  math.matrix([0.5, 0.5, -0.5, 1]),
-  math.matrix([-0.5, 0.5, -0.5, 1]),
-  math.matrix([-0.5, -0.5, 0.5, 1]),
-  math.matrix([0.5, -0.5, 0.5, 1]),
-  math.matrix([0.5, 0.5, 0.5, 1]),
-  math.matrix([-0.5, 0.5, 0.5, 1]),
-];
-
 let scene;
 
 let eyeSpacing = 0.04;
@@ -26,38 +15,42 @@ function setup() {
 
   scene = new Scene();
 
-  // beginRecordSVG(this, "hello.svg");
-  // line(20, 20, width - 20, height - 20);
-  // line(20, height - 20, width - 20, 20);
-  // endRecordSVG();
-
   stroke(255);
   strokeWeight(2);
 
-  noLoop();
+  // noLoop();
 }
 
 function draw() {
-  blendMode(BLEND);
+  // blendMode(BLEND);
   background(255);
+
+  // beginRecordSVG(this, "hello.svg");
+
   translate(width / 2, height / 2);
+  // for (let angle = 0; angle < TAU; angle += TAU / 16) {
+  angle += 0.02;
+  scene.reset();
+  scene.translate(0, 0, 7);
+  // scene.rotateX(-1.0);
+  // scene.translate(cos(angle) * 2.5, sin(angle) * 4, 0);
+  // scene.rotateX(angle);
+  // scene.rotateY(angle);
+  // scene.rotateZ(angle);
+  scene.rotateX(angle);
+  scene.rotateY(angle);
+  scene.add(new Cube(1));
+  scene.add(new Octahedron(1));
 
-  for (let angle = 0; angle < TAU; angle += TAU / 16) {
-    angle += 0.02;
-    scene.reset();
-    scene.translate(cos(angle) * 2, 0, 7.25 + sin(angle) * 4);
-    scene.rotateX(angle);
-    scene.rotateY(angle);
-    scene.rotateZ(angle);
-    scene.add(new Cube(1));
+  // blendMode(MULTIPLY);
+  stroke("cyan");
+  scene.render(leftCamera, 1);
 
-    blendMode(MULTIPLY);
-    stroke("cyan");
-    scene.render(leftCamera, 1);
+  stroke("red");
+  scene.render(rightCamera, 0.1);
+  // }
 
-    stroke("red");
-    scene.render(rightCamera, 0.1);
-  }
+  // endRecordSVG();
 }
 
 function connect(a, b) {
@@ -133,12 +126,84 @@ class Mesh {
     return scaledVerts;
   }
 
-  render(camera) {
+  render(camera, renderVertices = false, renderEdges = true) {
     const projectedVerts = this.projectPerspective(camera);
-    //Draw edges between projected vertices
-    this.edges.forEach((edge) => {
-      connect(projectedVerts[edge[0]], projectedVerts[edge[1]]);
-    });
+
+    if (renderEdges) {
+      //Draw edges between projected vertices
+      this.edges.forEach((edge) => {
+        connect(projectedVerts[edge[0]], projectedVerts[edge[1]]);
+      });
+    }
+    if (renderVertices) {
+      this.vertices.forEach((vertex) => {
+        point(vertex[0], vertex[1], vertex[2]);
+      });
+    }
+  }
+}
+
+class Tetrahedron extends Mesh {
+  size;
+
+  constructor(size) {
+    super();
+
+    this.size = size;
+
+    // Generate vertices
+    this.vertices = [
+      [size / 2, size / 2, size / 2, 1],
+      [size / 2, -size / 2, -size / 2, 1],
+      [-size / 2, size / 2, -size / 2, 1],
+      [-size / 2, -size / 2, size / 2, 1],
+    ];
+
+    //Generate edges
+    this.edges = [
+      [0, 1],
+      [1, 2],
+      [2, 0],
+      [3, 0],
+      [3, 1],
+      [3, 2],
+    ];
+  }
+}
+
+class Octahedron extends Mesh {
+  size;
+
+  constructor(size) {
+    super();
+
+    this.size = size;
+
+    // Generate vertices
+    this.vertices = [
+      [size / 2, 0, 0, 1],
+      [0, size / 2, 0, 1],
+      [0, 0, size / 2, 1],
+      [0, -size / 2, 0, 1],
+      [0, 0, -size / 2, 1],
+      [-size / 2, 0, 0, 1],
+    ];
+
+    //Generate edges
+    this.edges = [
+      [0, 1],
+      [0, 2],
+      [0, 4],
+      [0, 3],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 1],
+      [5, 1],
+      [5, 2],
+      [5, 4],
+      [5, 3],
+    ];
   }
 }
 
@@ -179,6 +244,17 @@ class Cube extends Mesh {
   }
 }
 
+class Icosahedron extends Mesh {
+  size;
+
+  constructor(size) {
+    // Generate vertices
+    this.vertices = [[0, size, size * math.phi, 1]];
+
+    this.edges = [];
+  }
+}
+
 class Camera {
   transform;
 
@@ -210,9 +286,9 @@ class Scene {
     this.objects.push(shape);
   }
 
-  render(camera) {
+  render(camera, renderVertices = false, renderEdges = true) {
     this.objects.forEach((object) => {
-      object.render(camera);
+      object.render(camera, renderVertices, renderEdges);
     });
   }
 
