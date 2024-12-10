@@ -13,8 +13,8 @@ class Mesh {
     this.transform = math.identity(4, 4);
   }
 
-  addTransformation(transform) {
-    this.transform = math.multiply(this.transform, transform);
+  addTransformation(transformation) {
+    this.transform = math.multiply(this.transform, transformation);
   }
 
   applyTransform() {
