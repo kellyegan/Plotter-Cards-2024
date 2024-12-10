@@ -10,8 +10,8 @@ let angle = 0;
 function setup() {
   createCanvas(900, 600);
 
-  leftCamera = new Camera(-eyeSpacing / 2, 0, -1.75, 1);
-  rightCamera = new Camera(eyeSpacing / 2, 0, -1.75, 1);
+  leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0, -1.75);
+  rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0, -1.75);
 
   scene = new Scene();
 

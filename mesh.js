@@ -102,6 +102,16 @@ class Camera {
   }
 }
 
+
+class WeakPerspectiveCamera extends Camera {
+  focalLength;
+
+  constructor(x = 0, y = 0, z = 0, f = 2) {
+    super(x, y, z);
+    this.focalLength = f;
+  }
+}
+
 class Scene {
   objects;
   cameras;
