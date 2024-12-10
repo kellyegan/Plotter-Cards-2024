@@ -1,7 +1,3 @@
-function connect(a, b) {
-  line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
-}
-
 class Mesh {
   vertices;
   edges;
@@ -23,13 +19,19 @@ class Mesh {
       });
   }
 
+  drawEdge(edge, projectedVerts) {
+    const a = projectedVerts[edge[0]];
+    const b = projectedVerts[edge[1]];
+    line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
+  }
+
   render(camera, renderVertices = false, renderEdges = true) {
     const projectedVerts = camera.project(this.applyTransform());
 
     if (renderEdges) {
       //Draw edges between projected vertices
       this.edges.forEach((edge) => {
-        connect(projectedVerts[edge[0]], projectedVerts[edge[1]]);
+        this.drawEdge(edge, projectedVerts);
       });
     }
     if (renderVertices) {
