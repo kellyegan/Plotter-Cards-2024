@@ -58,7 +58,6 @@ class Camera {
   }
 }
 
-
 class WeakPerspectiveCamera extends Camera {
   focalLength;
 
