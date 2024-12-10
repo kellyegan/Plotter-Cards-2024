@@ -25,6 +25,16 @@ class Mesh {
     line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
   }
 
+  drawVertex(vertex, label = "") {
+    const x = vertex.get([0]);
+    const y = vertex.get([1]);
+    push();
+    text(label, x + 5, y + 10);
+    strokeWeight(5);
+    point(x, y);
+    pop();   
+  }
+
   render(camera, renderVertices = false, renderEdges = true) {
     const projectedVerts = camera.project(this.applyTransform());
 
@@ -36,13 +46,7 @@ class Mesh {
     }
     if (renderVertices) {
       projectedVerts.forEach((vertex, i) => {
-        const x = vertex.get([0]);
-        const y = vertex.get([1]);
-        push();
-        text(i, x + 5, y + 10);
-        strokeWeight(5);
-        point(x, y);
-        pop();
+        this.drawVertex(vertex, i)
       });
     }
   }
