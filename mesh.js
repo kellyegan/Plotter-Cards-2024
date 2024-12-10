@@ -46,6 +46,9 @@ class Mesh {
   }
 }
 
+/**
+ * Base camera class for rendering shapes to 2D.
+ */
 class Camera {
   transform;
 
@@ -92,11 +95,9 @@ class WeakPerspectiveCamera extends Camera {
 }
 
 class OrthoCamera extends Camera {
-  focalLength;
 
-  constructor(x = 0, y = 0, z = 0, f = 2) {
+  constructor(x = 0, y = 0, z = 0) {
     super(x, y, z);
-    this.focalLength = f;
   }
 
   project(vertices) {    
