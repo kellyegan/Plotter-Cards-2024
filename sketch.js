@@ -4,8 +4,13 @@ let eyeSpacing = 0.04;
 
 let leftCamera;
 let rightCamera;
+let model;
 
 let angle = 0;
+
+function preload() {
+  // model = loadModel("Solids-Tetrahedron.stl");
+}
 
 function setup() {
   createCanvas(900, 600);
@@ -18,6 +23,9 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
+  // model.vertices.forEach((vertex) => {
+  //   console.log(vertexString(vertex));
+  // });
   // noLoop();
 }
 

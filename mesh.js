@@ -14,9 +14,9 @@ class Mesh {
   }
 
   applyTransform() {
-      return this.vertices.map((v) => {
-        return math.multiply(this.transform, v);
-      });
+    return this.vertices.map((v) => {
+      return math.multiply(this.transform, v);
+    });
   }
 
   drawEdge(edge, projectedVerts) {
@@ -32,7 +32,7 @@ class Mesh {
     text(label, x + 5, y + 10);
     strokeWeight(5);
     point(x, y);
-    pop();   
+    pop();
   }
 
   render(camera, renderVertices = false, renderEdges = true) {
@@ -46,7 +46,7 @@ class Mesh {
     }
     if (renderVertices) {
       projectedVerts.forEach((vertex, i) => {
-        this.drawVertex(vertex, i)
+        this.drawVertex(vertex, i);
       });
     }
   }
@@ -101,25 +101,25 @@ class WeakPerspectiveCamera extends Camera {
 }
 
 class OrthoCamera extends Camera {
-
   constructor(x = 0, y = 0, z = 0) {
     super(x, y, z);
   }
 
-  project(vertices) {    
+  project(vertices) {
     const orthographicProjection = math.matrix([
       [1, 0, 0, 0],
       [0, 1, 0, 0],
     ]);
 
     // Apply orthographic projection
-    const projectedVerts = vertices.map((p) => {
-      return math.multiply(orthographicProjection, p);
-    })
-    // Scale up projection
-    .map((v) => {
-      return math.multiply(v, width * 0.25);
-    });
+    const projectedVerts = vertices
+      .map((p) => {
+        return math.multiply(orthographicProjection, p);
+      })
+      // Scale up projection
+      .map((v) => {
+        return math.multiply(v, width * 0.25);
+      });
 
     return projectedVerts;
   }
@@ -465,4 +465,17 @@ class Dodecahedron extends Mesh {
       [5, 9],
     ];
   }
+}
+
+/** Evaluate if values are appoximately equal */
+function equalish(a, b, epsilon = 0.00001) {
+  return abs(a - b) < epsilon;
+}
+
+function vertexString(vertex, decimals = 5) {
+  let s = `x${vertex.x.toFixed(decimals)}`;
+  s += `y${vertex.y.toFixed(decimals)}`;
+  s += `z${vertex.z.toFixed(decimals)}`;
+
+  return s;
 }
