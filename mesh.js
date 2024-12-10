@@ -23,58 +23,8 @@ class Mesh {
       });
   }
 
-  projectOrtho() {
-    // 1. Apply object transform
-    const transformedVerts = this.applyTransform();
-
-    // 2. Apply orthographic projection
-    let orthographicProjection = math.matrix([
-      [1, 0, 0, 0],
-      [0, 1, 0, 0],
-    ]);
-    projectedVerts = transformedVerts.map((p) => {
-      return math.multiply(orthographicProjection, p);
-    });
-
-    // 4. Scale up verts (this could be done better)
-    const scaledVerts = projectedVerts.map((v) => {
-      return math.multiply(v, 200);
-    });
-
-    return scaledVerts;
-  }
-
-  projectPerspective(camera) {
-    // 1. Apply object transform
-    const transformedVerts = this.applyTransform();
-
-    // 2. Transform points in relation to camera
-    const cameraRelativeVerts = transformedVerts.map((p) => {
-      return math.add(p, camera.transform);
-    });
-
-    // 3. Project to 2D (using weak perspective)
-    const focalLength = 2;
-    const projectedVerts = cameraRelativeVerts.map((v) => {
-      let zScale = focalLength / v.get([2]);
-      let perspectiveProjection = math.matrix([
-        [zScale, 0, 0, 0],
-        [0, zScale, 0, 0],
-      ]);
-
-      return math.multiply(perspectiveProjection, v);
-    });
-
-    // 4. Scale up verts (this could be done better)
-    const scaledVerts = projectedVerts.map((v) => {
-      return math.multiply(v, 200);
-    });
-
-    return scaledVerts;
-  }
-
   render(camera, renderVertices = false, renderEdges = true) {
-    const projectedVerts = this.projectPerspective(camera);
+    const projectedVerts = camera.project(this.applyTransform());
 
     if (renderEdges) {
       //Draw edges between projected vertices
@@ -118,27 +68,54 @@ class WeakPerspectiveCamera extends Camera {
   }
 
   project(vertices) {
-    const cameraRelativeVerts = vertices.map((p) => {
-      return math.add(p, this.transform);
+    const projectedVertices = vertices
+      // Make vertices relative to camera
+      .map((p) => {
+        return math.add(p, this.transform);
+      })
+      // Apply weak perspective matrix
+      .map((v) => {
+        let zScale = this.focalLength / v.get([2]);
+        let perspectiveProjection = math.matrix([
+          [zScale, 0, 0, 0],
+          [0, zScale, 0, 0],
+        ]);
+
+        return math.multiply(perspectiveProjection, v);
+      })
+      // Scale up projection
+      .map((v) => {
+        return math.multiply(v, width * 0.25);
+      });
+
+    return projectedVertices;
+  }
+}
+
+class OrthoCamera extends Camera {
+  focalLength;
+
+  constructor(x = 0, y = 0, z = 0, f = 2) {
+    super(x, y, z);
+    this.focalLength = f;
+  }
+
+  project(vertices) {    
+    const orthographicProjection = math.matrix([
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+    ]);
+
+    // Apply orthographic projection
+    const projectedVerts = vertices.map((p) => {
+      return math.multiply(orthographicProjection, p);
+    })
+    // Scale up projection
+    .map((v) => {
+      return math.multiply(v, width * 0.25);
     });
 
-    // 3. Project to 2D (using weak perspective)
-    const projectedVerts = cameraRelativeVerts.map((v) => {
-      const zScale = this.focalLength / v.get([2]);
-      const perspectiveProjection = math.matrix([
-        [zScale, 0, 0, 0],
-        [0, zScale, 0, 0],
-      ]);
-
-      return math.multiply(perspectiveProjection, v);
-    });
-
-    // 4. Scale up verts (this could be done better)
-    const scaledVerts = projectedVerts.map((v) => {
-      return math.multiply(v, 200);
-    });
-
-    return scaledVerts;
+    return projectedVerts;
   }
 }
 
