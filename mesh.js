@@ -13,15 +13,19 @@ class Mesh {
     this.transform = math.identity(4, 4);
   }
 
-  applyTransform(transform) {
+  addTransformation(transform) {
     this.transform = math.multiply(this.transform, transform);
+  }
+
+  applyTransform() {
+      return this.vertices.map((v) => {
+        return math.multiply(this.transform, v);
+      });
   }
 
   projectOrtho() {
     // 1. Apply object transform
-    const transformedVerts = this.vertices.map((v) => {
-      return math.multiply(this.transform, v);
-    });
+    const transformedVerts = this.applyTransform();
 
     // 2. Apply orthographic projection
     let orthographicProjection = math.matrix([
@@ -42,9 +46,7 @@ class Mesh {
 
   projectPerspective(camera) {
     // 1. Apply object transform
-    const transformedVerts = this.vertices.map((v) => {
-      return math.multiply(this.transform, v);
-    });
+    const transformedVerts = this.applyTransform();
 
     // 2. Transform points in relation to camera
     const cameraRelativeVerts = transformedVerts.map((p) => {
@@ -100,6 +102,10 @@ class Camera {
   constructor(x = 0, y = 0, z = -1) {
     this.transform = math.matrix([x, y, z, 1]);
   }
+
+  project(vertices) {
+    return vertices;
+  }
 }
 
 
@@ -109,6 +115,30 @@ class WeakPerspectiveCamera extends Camera {
   constructor(x = 0, y = 0, z = 0, f = 2) {
     super(x, y, z);
     this.focalLength = f;
+  }
+
+  project(vertices) {
+    const cameraRelativeVerts = vertices.map((p) => {
+      return math.add(p, this.transform);
+    });
+
+    // 3. Project to 2D (using weak perspective)
+    const projectedVerts = cameraRelativeVerts.map((v) => {
+      const zScale = this.focalLength / v.get([2]);
+      const perspectiveProjection = math.matrix([
+        [zScale, 0, 0, 0],
+        [0, zScale, 0, 0],
+      ]);
+
+      return math.multiply(perspectiveProjection, v);
+    });
+
+    // 4. Scale up verts (this could be done better)
+    const scaledVerts = projectedVerts.map((v) => {
+      return math.multiply(v, 200);
+    });
+
+    return scaledVerts;
   }
 }
 
@@ -131,7 +161,7 @@ class Scene {
   }
 
   add(shape) {
-    shape.applyTransform(this.transform);
+    shape.addTransformation(this.transform);
     this.objects.push(shape);
   }
 
