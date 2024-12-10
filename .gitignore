@@ -1,2 +1,5 @@
 .DS_Store
 libraries/
+*.blend
+*.blend1
+*.stl
