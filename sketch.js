@@ -5,8 +5,8 @@ let eyeSpacing = 0.04;
 let leftCamera;
 let rightCamera;
 let model;
-let mesh;
-let tetrahedron;
+let mesh1, mesh2;
+let cube;
 let createSVG = false;
 
 let angle = 0;
@@ -16,17 +16,21 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(400, 600);
+  createCanvas(600, 400);
 
-  leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0, -1.75);
-  rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0, -1.75);
+  leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.1, -2.8);
+  rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.1, -2.8);
 
   scene = new Scene();
 
   stroke(255);
   strokeWeight(2);
 
-  mesh = createMeshFromModel(model);
+  mesh1 = createMeshFromModel(model);
+  cube = new Cube(1);
+
+  console.log(mesh1);
+  console.log(cube);
   tetrahedron = new Tetrahedron(1);
 
   noLoop();
@@ -45,11 +49,12 @@ function draw() {
   angle += 0.005;
   scene.reset();
 
-  scene.rotateX(PI / 8);
-  scene.rotateY(-PI / 8);
+  scene.rotateX((15 * TAU) / 360);
+  scene.rotateY(-(15 * TAU) / 360);
+  // scene.rotateY(-PI / 8);
 
-  scene.add(new Cube(1));
-  scene.add(mesh);
+  scene.add(cube);
+  scene.add(mesh1);
 
   //Stereo render
   // blendMode(SCREEN);
