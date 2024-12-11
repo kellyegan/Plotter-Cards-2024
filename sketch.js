@@ -15,17 +15,23 @@ let angle = 0;
 
 function preload() {
   models = [
-    "Solids-UVStar.stl",
     "Solids-CubeStar1.stl",
     "Solids-IcoStar1.stl",
     "Solids-IcoStar2.stl",
     "Solids-RhombicTriacontahedronStar.stl",
+    "Solids-Star8Points.stl",
+    "Solids-TriakisIcosahedron.stl",
     "Solids-TruncatedDodecahedron.stl",
+    "Solids-TruncatedDodecahedronMorph.stl",
+    "Solids-TruncatedDodecahedronMorphStar1.stl",
+    "Solids-TruncatedDodecahedronMorphStar2.stl",
+    "Solids-TruncatedDodecahedronMorphStar3.stl",
     "Solids-TruncatedDodecahedronStar1.stl",
     "Solids-TruncatedDodecahedronStar2.stl",
+    "Solids-UVStar.stl",
   ];
 
-  let modelPath = models[6];
+  let modelPath = models[4];
   console.log(modelPath);
   model = loadModel("models/" + modelPath);
   modelName = modelPath.split(".")[0];
@@ -48,7 +54,7 @@ function setup() {
   // modelMesh = createMeshFromJSONdata(jsonMeshData);
 
   console.log(modelName);
-  // saveJSON(modelMesh, modelName);
+  // saveJSON(modelMesh, "json/Solids-TruncatedDodecahedron.json");
 
   tetrahedron = new Tetrahedron(1);
 
@@ -68,8 +74,8 @@ function draw() {
   scene.reset();
 
   scene.rotateX((15 * TAU) / 360);
-  scene.rotateY(-(15 * TAU) / 360);
-  scene.rotateY(angle);
+  scene.rotateY(-(30 * TAU) / 360);
+  // scene.rotateY(angle);
 
   scene.add(modelMesh);
 
