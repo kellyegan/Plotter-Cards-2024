@@ -9,6 +9,20 @@ class Mesh {
     this.transform = math.identity(4, 4);
   }
 
+  reset() {
+    this.transform = math.identity(4, 4);
+  }
+
+  copy() {
+    const copy = new Mesh();
+    copy.transform = math.multiply(math.identity(4, 4), this.transform);
+    this.vertices.forEach( v => copy.vertices.push(v));
+    this.edges.forEach( e => copy.edges.push(e) )
+    copy.edges = this.edges;
+
+    return copy;
+  }
+
   addTransformation(transformation) {
     this.transform = math.multiply(this.transform, transformation);
   }
@@ -144,8 +158,9 @@ class Scene {
   }
 
   add(shape) {
-    shape.addTransformation(this.transform);
-    this.objects.push(shape);
+    const newShape = shape.copy();
+    newShape.addTransformation(this.transform);
+    this.objects.push(newShape);
   }
 
   render(camera, renderVertices = false, renderEdges = true) {
@@ -478,4 +493,40 @@ function vertexString(vertex, decimals = 5) {
   s += `z${vertex.z.toFixed(decimals)}`;
 
   return s;
+}
+
+function createMeshFromModel( model ) {
+  const uniqueVerts = new Map();
+  const vertRef = new Map();
+
+  const mesh = new Mesh();
+
+  let vertexCount = 0;
+  model.vertices.forEach((vertex, i) => {
+    const vertString = vertexString(vertex)
+    if(!uniqueVerts.has(vertString)) {
+      uniqueVerts.set(vertString, {
+        index: vertexCount, 
+        x: vertex.x,
+        y: vertex.y,
+        z: vertex.z
+      });
+      vertexCount++;
+    }
+    vertRef.set(i, uniqueVerts.get(vertString).index)
+
+  });
+  
+  uniqueVerts.forEach( v => {
+    mesh.vertices[v.index] = [v.x, v.y, v.z, 1]
+  });
+
+  model.faces.forEach( face => {
+    for(let i = 0; i < face.length; i++) {
+      const a = vertRef.get(face[i]);
+      const b = vertRef.get(face[(i + 1)% face.length]);
+      mesh.edges.push([a,b]);
+    }
+  });
+  return mesh;
 }

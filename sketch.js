@@ -5,11 +5,13 @@ let eyeSpacing = 0.04;
 let leftCamera;
 let rightCamera;
 let model;
+let mesh;
+let tetrahedron;
 
 let angle = 0;
 
 function preload() {
-  // model = loadModel("Solids-Tetrahedron.stl");
+  model = loadModel("Solids-Icostar.stl");
 }
 
 function setup() {
@@ -23,9 +25,9 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
-  // model.vertices.forEach((vertex) => {
-  //   console.log(vertexString(vertex));
-  // });
+  mesh = createMeshFromModel( model );
+  tetrahedron = new Tetrahedron(1);
+
   // noLoop();
 }
 
@@ -37,7 +39,7 @@ function draw() {
 
   translate(width / 2, height / 2);
   // for (let angle = 0; angle < TAU; angle += TAU / 16) {
-  angle += 0.02;
+  angle += 0.01;
   scene.reset();
   scene.translate(0, 0, 8.5);
   // scene.rotateX(-1.0);
@@ -47,19 +49,20 @@ function draw() {
   scene.rotateY(angle);
   scene.rotateZ(angle);
 
-  let polyline = new Polyline();
-  polyline.add(1, 0, 0);
-  polyline.add(1, 1, 0); //+y
-  polyline.add(1, 1, 1); //+z
-  polyline.add(2, 1, 1); //+x
-  polyline.add(2, 2, 1); //+y
-  polyline.add(2, 2, 2); //+z
-  polyline.add(3, 2, 2); //+x
-
-  scene.add(polyline);
+  // let polyline = new Polyline();
+  // polyline.add(1, 0, 0);
+  // polyline.add(1, 1, 0); //+y
+  // polyline.add(1, 1, 1); //+z
+  // polyline.add(2, 1, 1); //+x
+  // polyline.add(2, 2, 1); //+y
+  // polyline.add(2, 2, 2); //+z
+  // polyline.add(3, 2, 2); //+x
+  // scene.add(polyline);
 
   // scene.add(new Cube(1));
-  scene.add(new Dodecahedron(1));
+  // scene.add(tetrahedron);
+
+  scene.add(mesh);
 
   blendMode(SCREEN);
   stroke("cyan");
