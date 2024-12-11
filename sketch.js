@@ -41,13 +41,13 @@ function draw() {
   // for (let angle = 0; angle < TAU; angle += TAU / 16) {
   angle += 0.01;
   scene.reset();
-  scene.translate(0, 0, 8.5);
+  scene.translate(0, 0, 4.5);
   // scene.rotateX(-1.0);
-  scene.translate(cos(angle) * 2.5, 0, sin(angle) * 4);
+  // scene.translate(cos(angle) * 2.5, 0, sin(angle) * 4);
 
-  scene.rotateX(angle);
-  scene.rotateY(angle);
-  scene.rotateZ(angle);
+  // scene.rotateX(angle);
+  // scene.rotateY(angle);
+  // scene.rotateZ(angle);
 
   // let polyline = new Polyline();
   // polyline.add(1, 0, 0);
