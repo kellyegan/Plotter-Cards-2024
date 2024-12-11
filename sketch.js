@@ -25,8 +25,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(600, 400);
-  createCanvas(600, 400);
+  createCanvas(750, 500);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.02, -3);
   rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.02, -3);
