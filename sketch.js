@@ -12,15 +12,24 @@ let createSVG = false;
 let angle = 0;
 
 function preload() {
-  model = loadModel("models/Solids-Cube.stl");
+  models = [
+    "models/Solids-UVStar.stl",
+    "models/Solids-Cube.stl",
+    "models/Solids-CubeStar1.stl",
+    "models/Solids-IcoStar1.stl",
+    "models/Solids-IcoStar2.stl",
+    "models/Solids-RhombicTriacontahedronStar.stl",
+  ];
+
+  model = loadModel(models[0]);
 }
 
 function setup() {
   createCanvas(600, 400);
   createCanvas(600, 400);
 
-  leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.1, -2.8);
-  rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.1, -2.8);
+  leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.02, -3);
+  rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.02, -3);
 
   scene = new Scene();
 
@@ -51,7 +60,6 @@ function draw() {
   }
 
   translate(width / 2, height / 2);
-  // for (let angle = 0; angle < TAU; angle += TAU / 16) {
   angle += 0.005;
   scene.reset();
 
@@ -59,15 +67,12 @@ function draw() {
   scene.rotateY(-(15 * TAU) / 360);
   // scene.rotateY(-PI / 8);
 
-  scene.add(cube);
-  scene.add(mesh1);
-  scene.add(cube);
   scene.add(mesh1);
 
   //Stereo render
   // blendMode(SCREEN);
   stroke("cyan");
-  scene.render(leftCamera, true);
+  scene.render(leftCamera);
 
   stroke("red");
   scene.render(rightCamera);

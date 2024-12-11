@@ -179,9 +179,14 @@ class Scene {
     this.objects.push(newShape);
   }
 
-  render(camera, renderVertices = false, renderEdges = true) {
+  render(
+    camera,
+    renderVertices = false,
+    renderLabels = false,
+    renderEdges = true
+  ) {
     this.objects.forEach((object) => {
-      object.render(camera, renderVertices, renderEdges);
+      object.render(camera, renderVertices, renderLabels, renderEdges);
     });
   }
 
