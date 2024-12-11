@@ -39,17 +39,27 @@ class Mesh {
     line(a.get([0]), a.get([1]), b.get([0]), b.get([1]));
   }
 
-  drawVertex(vertex, label = "") {
+  drawVertex(vertex) {
     const x = vertex.get([0]);
     const y = vertex.get([1]);
     push();
-    text(label, x + 5, y + 10);
     strokeWeight(5);
     point(x, y);
     pop();
   }
 
-  render(camera, renderVertices = false, renderEdges = true) {
+  drawLabel(vertex, label = "") {
+    const x = vertex.get([0]);
+    const y = vertex.get([1]);
+    text(label, x + 5, y + 10);
+  }
+
+  render(
+    camera,
+    renderLabels = false,
+    renderVertices = false,
+    renderEdges = true
+  ) {
     const projectedVerts = camera.project(this.applyTransform());
 
     if (renderEdges) {
@@ -60,7 +70,13 @@ class Mesh {
     }
     if (renderVertices) {
       projectedVerts.forEach((vertex, i) => {
-        this.drawVertex(vertex, i);
+        this.drawVertex(vertex);
+      });
+    }
+
+    if (renderLabels) {
+      projectedVerts.forEach((vertex, i) => {
+        this.drawLabel(vertex, i);
       });
     }
   }
@@ -243,7 +259,7 @@ class Polyline extends Mesh {
 class Tetrahedron extends Mesh {
   size;
 
-  constructor(size) {
+  constructor(size = 1) {
     super();
 
     this.size = size;
@@ -274,7 +290,7 @@ class Tetrahedron extends Mesh {
 class Octahedron extends Mesh {
   size;
 
-  constructor(size) {
+  constructor(size = 1) {
     super();
 
     this.size = size;
@@ -313,7 +329,7 @@ class Octahedron extends Mesh {
 class Cube extends Mesh {
   size;
 
-  constructor(size) {
+  constructor(size = 1) {
     super();
 
     this.size = size;
@@ -353,7 +369,7 @@ class Cube extends Mesh {
 class Icosahedron extends Mesh {
   size;
 
-  constructor(size) {
+  constructor(size = 1) {
     super();
 
     const halfsize = size / 2;
@@ -414,7 +430,7 @@ class Icosahedron extends Mesh {
 class Dodecahedron extends Mesh {
   size;
 
-  constructor(size) {
+  constructor(size = 1) {
     super();
 
     this.size = size;

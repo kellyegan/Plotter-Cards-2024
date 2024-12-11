@@ -12,7 +12,7 @@ let createSVG = false;
 let angle = 0;
 
 function preload() {
-  model = loadModel("models/Solids-RhombicTriacontahedronStar.stl");
+  model = loadModel("models/Solids-Cube.stl");
 }
 
 function setup() {
@@ -54,10 +54,10 @@ function draw() {
   //Stereo render
   // blendMode(SCREEN);
   stroke("cyan");
-  scene.render(leftCamera, false);
+  scene.render(leftCamera, true);
 
   stroke("red");
-  scene.render(rightCamera, false);
+  scene.render(rightCamera);
 
   if (createSVG) {
     endRecordSVG();
