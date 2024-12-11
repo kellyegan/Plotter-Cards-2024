@@ -567,3 +567,12 @@ function createMeshFromModel(model) {
 
   return mesh;
 }
+
+function createMeshFromJSONdata(jsonData) {
+  const mesh = new Mesh();
+
+  mesh.vertices = jsonData.vertices;
+  mesh.edges = jsonData.edges;
+
+  return mesh;
+}
