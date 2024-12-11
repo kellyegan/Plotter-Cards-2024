@@ -16,8 +16,8 @@ class Mesh {
   copy() {
     const copy = new Mesh();
     copy.transform = math.multiply(math.identity(4, 4), this.transform);
-    this.vertices.forEach( v => copy.vertices.push(v));
-    this.edges.forEach( e => copy.edges.push(e) )
+    this.vertices.forEach((v) => copy.vertices.push(v));
+    this.edges.forEach((e) => copy.edges.push(e));
     copy.edges = this.edges;
 
     return copy;
@@ -495,7 +495,7 @@ function vertexString(vertex, decimals = 5) {
   return s;
 }
 
-function createMeshFromModel( model ) {
+function createMeshFromModel(model) {
   const uniqueVerts = new Map();
   const vertRef = new Map();
 
@@ -503,30 +503,46 @@ function createMeshFromModel( model ) {
 
   let vertexCount = 0;
   model.vertices.forEach((vertex, i) => {
-    const vertString = vertexString(vertex)
-    if(!uniqueVerts.has(vertString)) {
+    const vertString = vertexString(vertex);
+    if (!uniqueVerts.has(vertString)) {
       uniqueVerts.set(vertString, {
-        index: vertexCount, 
+        index: vertexCount,
         x: vertex.x,
         y: vertex.y,
-        z: vertex.z
+        z: vertex.z,
       });
       vertexCount++;
     }
-    vertRef.set(i, uniqueVerts.get(vertString).index)
-
-  });
-  
-  uniqueVerts.forEach( v => {
-    mesh.vertices[v.index] = [v.x, v.y, v.z, 1]
+    vertRef.set(i, uniqueVerts.get(vertString).index);
   });
 
-  model.faces.forEach( face => {
-    for(let i = 0; i < face.length; i++) {
-      const a = vertRef.get(face[i]);
-      const b = vertRef.get(face[(i + 1)% face.length]);
-      mesh.edges.push([a,b]);
+  uniqueVerts.forEach((v) => {
+    mesh.vertices[v.index] = [v.x, v.y, v.z, 1];
+  });
+
+  const uniqueEdges = [];
+
+  model.faces.forEach((face) => {
+    for (let i = 0; i < face.length; i++) {
+      let a = vertRef.get(face[i]);
+      let b = vertRef.get(face[(i + 1) % face.length]);
+
+      // Order edge vertices
+      if (a > b) {
+        let s = a;
+        a = b;
+        b = s;
+      }
+
+      let edgeString = `${a}->${b}`;
+
+      // Check if edge is already included
+      if (!uniqueEdges.includes(edgeString)) {
+        uniqueEdges.push(edgeString);
+        mesh.edges.push([a, b]);
+      }
     }
   });
+  console.log(mesh.edges);
   return mesh;
 }

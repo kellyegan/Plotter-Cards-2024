@@ -11,7 +11,7 @@ let tetrahedron;
 let angle = 0;
 
 function preload() {
-  model = loadModel("Solids-Icostar.stl");
+  model = loadModel("Solids-Tetrahedron.stl");
 }
 
 function setup() {
@@ -25,7 +25,7 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
-  mesh = createMeshFromModel( model );
+  mesh = createMeshFromModel(model);
   tetrahedron = new Tetrahedron(1);
 
   // noLoop();
@@ -39,14 +39,14 @@ function draw() {
 
   translate(width / 2, height / 2);
   // for (let angle = 0; angle < TAU; angle += TAU / 16) {
-  angle += 0.01;
+  angle += 0.005;
   scene.reset();
   scene.translate(0, 0, 4.5);
   // scene.rotateX(-1.0);
   // scene.translate(cos(angle) * 2.5, 0, sin(angle) * 4);
 
-  // scene.rotateX(angle);
-  // scene.rotateY(angle);
+  scene.rotateX(angle);
+  scene.rotateY(angle);
   // scene.rotateZ(angle);
 
   // let polyline = new Polyline();
@@ -66,10 +66,10 @@ function draw() {
 
   blendMode(SCREEN);
   stroke("cyan");
-  scene.render(leftCamera);
+  // scene.render(leftCamera, true);
 
   stroke("red");
-  scene.render(rightCamera);
+  scene.render(rightCamera, true);
   // }
 
   // endRecordSVG();
