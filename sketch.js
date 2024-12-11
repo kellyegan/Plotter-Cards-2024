@@ -7,8 +7,6 @@ let rightCamera;
 let model;
 let mesh1, mesh2;
 let cube;
-let mesh1, mesh2;
-let cube;
 let createSVG = false;
 
 let angle = 0;
