@@ -7,15 +7,16 @@ let rightCamera;
 let model;
 let mesh;
 let tetrahedron;
+let createSVG = false;
 
 let angle = 0;
 
 function preload() {
-  model = loadModel("Solids-Tetrahedron.stl");
+  model = loadModel("models/Solids-RhombicTriacontahedronStar.stl");
 }
 
 function setup() {
-  createCanvas(900, 600);
+  createCanvas(400, 600);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0, -1.75);
   rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0, -1.75);
@@ -28,49 +29,37 @@ function setup() {
   mesh = createMeshFromModel(model);
   tetrahedron = new Tetrahedron(1);
 
-  // noLoop();
+  noLoop();
 }
 
 function draw() {
   blendMode(BLEND);
-  background(0);
+  background(255);
 
-  // beginRecordSVG(this, "hello.svg");
+  if (createSVG) {
+    beginRecordSVG(this, "hello.svg");
+  }
 
   translate(width / 2, height / 2);
   // for (let angle = 0; angle < TAU; angle += TAU / 16) {
   angle += 0.005;
   scene.reset();
-  scene.translate(0, 0, 4.5);
-  // scene.rotateX(-1.0);
-  // scene.translate(cos(angle) * 2.5, 0, sin(angle) * 4);
 
-  scene.rotateX(angle);
-  scene.rotateY(angle);
-  // scene.rotateZ(angle);
+  scene.rotateX(PI / 8);
+  scene.rotateY(-PI / 8);
 
-  // let polyline = new Polyline();
-  // polyline.add(1, 0, 0);
-  // polyline.add(1, 1, 0); //+y
-  // polyline.add(1, 1, 1); //+z
-  // polyline.add(2, 1, 1); //+x
-  // polyline.add(2, 2, 1); //+y
-  // polyline.add(2, 2, 2); //+z
-  // polyline.add(3, 2, 2); //+x
-  // scene.add(polyline);
-
-  // scene.add(new Cube(1));
-  // scene.add(tetrahedron);
-
+  scene.add(new Cube(1));
   scene.add(mesh);
 
-  blendMode(SCREEN);
+  //Stereo render
+  // blendMode(SCREEN);
   stroke("cyan");
-  // scene.render(leftCamera, true);
+  scene.render(leftCamera, false);
 
   stroke("red");
-  scene.render(rightCamera, true);
-  // }
+  scene.render(rightCamera, false);
 
-  // endRecordSVG();
+  if (createSVG) {
+    endRecordSVG();
+  }
 }
