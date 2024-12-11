@@ -7,6 +7,8 @@ let rightCamera;
 let model;
 let mesh1, mesh2;
 let cube;
+let mesh1, mesh2;
+let cube;
 let createSVG = false;
 
 let angle = 0;
@@ -17,6 +19,7 @@ function preload() {
 
 function setup() {
   createCanvas(600, 400);
+  createCanvas(600, 400);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.1, -2.8);
   rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.1, -2.8);
@@ -26,6 +29,11 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
+  mesh1 = createMeshFromModel(model);
+  cube = new Cube(1);
+
+  console.log(mesh1);
+  console.log(cube);
   mesh1 = createMeshFromModel(model);
   cube = new Cube(1);
 
@@ -53,6 +61,8 @@ function draw() {
   scene.rotateY(-(15 * TAU) / 360);
   // scene.rotateY(-PI / 8);
 
+  scene.add(cube);
+  scene.add(mesh1);
   scene.add(cube);
   scene.add(mesh1);
 
