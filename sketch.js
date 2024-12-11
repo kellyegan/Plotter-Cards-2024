@@ -7,6 +7,7 @@ let rightCamera;
 let model;
 let modelName;
 let modelMesh, mesh2;
+let jsonMeshData;
 let cube;
 let createSVG = false;
 
@@ -19,11 +20,17 @@ function preload() {
     "Solids-IcoStar1.stl",
     "Solids-IcoStar2.stl",
     "Solids-RhombicTriacontahedronStar.stl",
+    "Solids-TruncatedDodecahedron.stl",
+    "Solids-TruncatedDodecahedronStar1.stl",
+    "Solids-TruncatedDodecahedronStar2.stl",
   ];
 
-  let modelPath = models[0];
+  let modelPath = models[6];
+  console.log(modelPath);
   model = loadModel("models/" + modelPath);
   modelName = modelPath.split(".")[0];
+
+  jsonMeshData = loadJSON("json/Solids-TruncatedDodecahedron.json");
 }
 
 function setup() {
@@ -38,11 +45,14 @@ function setup() {
   strokeWeight(2);
 
   modelMesh = createMeshFromModel(model);
-  saveJSON(modelMesh, modelName);
+  // modelMesh = createMeshFromJSONdata(jsonMeshData);
+
+  console.log(modelName);
+  // saveJSON(modelMesh, modelName);
 
   tetrahedron = new Tetrahedron(1);
 
-  noLoop();
+  // noLoop();
 }
 
 function draw() {
@@ -59,7 +69,7 @@ function draw() {
 
   scene.rotateX((15 * TAU) / 360);
   scene.rotateY(-(15 * TAU) / 360);
-  // scene.rotateY(-PI / 8);
+  scene.rotateY(angle);
 
   scene.add(modelMesh);
 
@@ -69,7 +79,7 @@ function draw() {
   scene.render(leftCamera);
 
   stroke("red");
-  scene.render(rightCamera);
+  scene.render(rightCamera, false);
 
   if (createSVG) {
     endRecordSVG();
