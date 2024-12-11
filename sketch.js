@@ -5,7 +5,8 @@ let eyeSpacing = 0.04;
 let leftCamera;
 let rightCamera;
 let model;
-let mesh1, mesh2;
+let modelName;
+let modelMesh, mesh2;
 let cube;
 let createSVG = false;
 
@@ -13,15 +14,16 @@ let angle = 0;
 
 function preload() {
   models = [
-    "models/Solids-UVStar.stl",
-    "models/Solids-Cube.stl",
-    "models/Solids-CubeStar1.stl",
-    "models/Solids-IcoStar1.stl",
-    "models/Solids-IcoStar2.stl",
-    "models/Solids-RhombicTriacontahedronStar.stl",
+    "Solids-UVStar.stl",
+    "Solids-CubeStar1.stl",
+    "Solids-IcoStar1.stl",
+    "Solids-IcoStar2.stl",
+    "Solids-RhombicTriacontahedronStar.stl",
   ];
 
-  model = loadModel(models[0]);
+  let modelPath = models[0];
+  model = loadModel("models/" + modelPath);
+  modelName = modelPath.split(".")[0];
 }
 
 function setup() {
@@ -35,16 +37,9 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
-  mesh1 = createMeshFromModel(model);
-  cube = new Cube(1);
+  modelMesh = createMeshFromModel(model);
+  saveJSON(modelMesh, modelName);
 
-  console.log(mesh1);
-  console.log(cube);
-  mesh1 = createMeshFromModel(model);
-  cube = new Cube(1);
-
-  console.log(mesh1);
-  console.log(cube);
   tetrahedron = new Tetrahedron(1);
 
   noLoop();
@@ -66,7 +61,7 @@ function draw() {
   scene.rotateY(-(15 * TAU) / 360);
   // scene.rotateY(-PI / 8);
 
-  scene.add(mesh1);
+  scene.add(modelMesh);
 
   //Stereo render
   // blendMode(SCREEN);
