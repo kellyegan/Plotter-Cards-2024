@@ -123,7 +123,7 @@ class WeakPerspectiveCamera extends Camera {
       })
       // Scale up projection
       .map((v) => {
-        return math.multiply(v, width * 0.25);
+        return math.multiply(v, min(width, height));
       });
 
     return projectedVertices;
@@ -341,7 +341,7 @@ class Cube extends Mesh {
         let y = -this.size / 2 + ((this.size * Math.floor(j / 2)) % 2);
         let z = -this.size / 2 + this.size * i;
 
-        this.vertices.push(math.matrix([x, y, z, 1]));
+        this.vertices.push([x, y, z, 1]);
       }
     }
 
@@ -559,6 +559,6 @@ function createMeshFromModel(model) {
       }
     }
   });
-  console.log(mesh.edges);
+
   return mesh;
 }
