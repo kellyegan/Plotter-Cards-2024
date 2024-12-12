@@ -59,9 +59,12 @@ class Mesh {
   }
 
   drawLabel(vertex, label = "") {
+    push();
+    noStroke();
     const x = vertex.get([0]);
     const y = vertex.get([1]);
     text(label, x + 5, y + 10);
+    pop();
   }
 
   render(
