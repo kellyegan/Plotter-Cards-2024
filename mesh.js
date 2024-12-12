@@ -33,6 +33,21 @@ class Mesh {
     });
   }
 
+  deleteVertex(index) {
+    console.log(this.edges.length);
+    this.edges = this.edges.filter((edge) => {
+      let keepEdge = true;
+      edge.forEach((vertexIndex) => {
+        if (vertexIndex === index) {
+          console.log(edge, index);
+          keepEdge = false;
+        }
+      });
+      return keepEdge;
+    });
+    console.log(this.edges.length);
+  }
+
   addTransformation(transformation) {
     this.transform = math.multiply(this.transform, transformation);
   }

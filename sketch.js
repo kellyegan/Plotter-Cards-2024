@@ -139,6 +139,9 @@ function keyPressed() {
     case "J":
       saveJSON(currentModelMesh, currentModelName);
       break;
+    case "d":
+      currentModelMesh.deleteVertex(4);
+      break;
   }
 }
 
