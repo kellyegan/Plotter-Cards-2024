@@ -7,6 +7,7 @@ let rightCamera;
 
 let modelIndex;
 let currentModelMesh;
+let currentModelName;
 let newModelLoaded = false;
 
 let paused = true;
@@ -49,7 +50,7 @@ function setup() {
     "Solids-TruncatedDodecahedronStar2.stl",
   ];
 
-  modelIndex = 4;
+  modelIndex = 0;
   loadSTLModel(modelIndex);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.02, -3);
@@ -133,6 +134,10 @@ function keyPressed() {
     case "l":
     case "L":
       showLabels = !showLabels;
+      break;
+    case "j":
+    case "J":
+      saveJSON(currentModelMesh, currentModelName);
       break;
   }
 }
