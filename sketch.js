@@ -10,6 +10,7 @@ let currentModelMesh;
 let newModelLoaded = false;
 
 let paused = true;
+let showLabels = false;
 
 let jsonMeshData;
 
@@ -28,6 +29,8 @@ function setup() {
   yStart = 0;
 
   models = [
+    "Solids-Bauble1.stl",
+    "Solids-Bauble2.stl",
     "Solids-UVStar.stl",
     "Solids-CubeStar1.stl",
     "Solids-HerringboneStar1.stl",
@@ -86,12 +89,13 @@ function draw() {
     scene.add(currentModelMesh);
 
     //Stereo render
-    // blendMode(SCREEN);
-    stroke("cyan");
-    scene.render(leftCamera);
+    if (!showLabels) {
+      stroke("cyan");
+      scene.render(leftCamera);
+    }
 
     stroke("red");
-    scene.render(rightCamera, false);
+    scene.render(rightCamera, showLabels);
 
     if (createSVG) {
       endRecordSVG();
@@ -125,6 +129,10 @@ function keyPressed() {
     case "s":
     case "S":
       createSVG = true;
+      break;
+    case "l":
+    case "L":
+      showLabels = !showLabels;
       break;
   }
 }
