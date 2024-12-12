@@ -33,19 +33,28 @@ class Mesh {
     });
   }
 
-  deleteVertex(index) {
-    console.log(this.edges.length);
+  deleteVertex(indexToDelete) {
     this.edges = this.edges.filter((edge) => {
       let keepEdge = true;
       edge.forEach((vertexIndex) => {
-        if (vertexIndex === index) {
-          console.log(edge, index);
+        if (vertexIndex === indexToDelete) {
           keepEdge = false;
         }
       });
       return keepEdge;
     });
-    console.log(this.edges.length);
+
+    // for (let j = 0; j < this.edges.length; j++) {
+    //   for (let i = 0; i < this.edges[j].length; i++) {
+    //     const currentIndex = this.edges[j][i];
+    //     if (currentIndex > indexToDelete) {
+    //       this.edges[j][i] = currentIndex - 1;
+    //     }
+    //   }
+    // }
+
+    // this.vertices.pop(indexToDelete);
+    // console.log(this.edges);
   }
 
   addTransformation(transformation) {
