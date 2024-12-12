@@ -4,18 +4,34 @@ let eyeSpacing = 0.04;
 
 let leftCamera;
 let rightCamera;
-let model;
-let modelName;
-let modelMesh, mesh2;
+
+let modelIndex;
+let currentModelMesh;
+let newModelLoaded = false;
+
+let paused = true;
+
 let jsonMeshData;
-let cube;
+
 let createSVG = false;
 
-let angle = 0;
+let xAngle, yAngle, xStart, yStart;
 
-function preload() {
+function preload() {}
+
+function setup() {
+  createCanvas(750, 500);
+
+  xAngle = (15 * TAU) / 360;
+  yAngle = -(15 * TAU) / 360;
+  xStart = 0;
+  yStart = 0;
+
   models = [
+    "Solids-UVStar.stl",
     "Solids-CubeStar1.stl",
+    "Solids-HerringboneStar1.stl",
+    "Solids-HerringboneStar2.stl",
     "Solids-IcoStar1.stl",
     "Solids-IcoStar2.stl",
     "Solids-RhombicTriacontahedronStar.stl",
@@ -28,19 +44,10 @@ function preload() {
     "Solids-TruncatedDodecahedronMorphStar3.stl",
     "Solids-TruncatedDodecahedronStar1.stl",
     "Solids-TruncatedDodecahedronStar2.stl",
-    "Solids-UVStar.stl",
   ];
 
-  let modelPath = models[4];
-  console.log(modelPath);
-  model = loadModel("models/" + modelPath);
-  modelName = modelPath.split(".")[0];
-
-  jsonMeshData = loadJSON("json/Solids-TruncatedDodecahedron.json");
-}
-
-function setup() {
-  createCanvas(750, 500);
+  modelIndex = 4;
+  loadSTLModel(modelIndex);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.02, -3);
   rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.02, -3);
@@ -50,44 +57,91 @@ function setup() {
   stroke(255);
   strokeWeight(2);
 
-  modelMesh = createMeshFromModel(model);
-  // modelMesh = createMeshFromJSONdata(jsonMeshData);
-
-  console.log(modelName);
   // saveJSON(modelMesh, "json/Solids-TruncatedDodecahedron.json");
 
   tetrahedron = new Tetrahedron(1);
-
-  // noLoop();
 }
 
 function draw() {
   blendMode(BLEND);
   background(255);
 
-  if (createSVG) {
-    beginRecordSVG(this, "hello.svg");
+  if (newModelLoaded) {
+    if (createSVG) {
+      beginRecordSVG(this, `${currentModelName}`);
+    }
+
+    translate(width / 2, height / 2);
+    // angle += 0.005;
+    scene.reset();
+
+    if (!paused) {
+      xAngle = map(mouseY, 0, height, -PI / 2, PI / 2);
+      yAngle = map(mouseX, 0, width, 0, PI);
+    }
+
+    scene.rotateX(xAngle);
+    scene.rotateY(yAngle);
+
+    scene.add(currentModelMesh);
+
+    //Stereo render
+    // blendMode(SCREEN);
+    stroke("cyan");
+    scene.render(leftCamera);
+
+    stroke("red");
+    scene.render(rightCamera, false);
+
+    if (createSVG) {
+      endRecordSVG();
+      createSVG = false;
+    }
+  }
+}
+
+function mousePressed() {
+  xStart = mouseX;
+  yStart = mouseY;
+  paused = !paused;
+}
+
+function keyPressed() {
+  switch (keyCode) {
+    case RIGHT_ARROW:
+      modelIndex = (modelIndex + 1) % models.length;
+      console.log(modelIndex);
+      loadSTLModel(modelIndex);
+      break;
+    case LEFT_ARROW:
+      modelIndex--;
+      if (modelIndex < 0) modelIndex = models.length - 1;
+      console.log(modelIndex);
+      loadSTLModel(modelIndex);
+      break;
   }
 
-  translate(width / 2, height / 2);
-  angle += 0.005;
-  scene.reset();
-
-  scene.rotateX((15 * TAU) / 360);
-  scene.rotateY(-(30 * TAU) / 360);
-  // scene.rotateY(angle);
-
-  scene.add(modelMesh);
-
-  //Stereo render
-  // blendMode(SCREEN);
-  stroke("cyan");
-  scene.render(leftCamera);
-
-  stroke("red");
-  scene.render(rightCamera, false);
-
-  if (createSVG) {
-    endRecordSVG();
+  switch (key) {
+    case "s":
+    case "S":
+      createSVG = true;
+      break;
   }
+}
+
+function loadSTLModel(index) {
+  newModelLoaded = false;
+  currentModelName = models[index].split(".")[0];
+  loadModel("models/" + models[index], onModelLoaded, onModelFailed);
+  console.log(`Loading ${currentModelName}`);
+}
+
+function onModelLoaded(modelData) {
+  console.log("Loaded!");
+  currentModelMesh = createMeshFromModel(modelData);
+  newModelLoaded = true;
+}
+
+function onModelFailed(error) {
+  console.log("ERROR: " + error);
 }
