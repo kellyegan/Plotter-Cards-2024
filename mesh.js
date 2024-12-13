@@ -34,7 +34,7 @@ class Mesh {
   }
 
   deleteVertex(indexToDelete) {
-    console.log(indexToDelete)
+    console.log(indexToDelete);
     console.log(this.edges);
     this.edges = this.edges.filter((edge) => {
       let keepEdge = true;
@@ -48,15 +48,14 @@ class Mesh {
     });
 
     console.log(this.edges);
-    this.edges = this.edges.map( (edge) => {
-      const newEdge = edge.map( vertex => {
+    this.edges = this.edges.map((edge) => {
+      const newEdge = edge.map((vertex) => {
         return vertex < indexToDelete ? vertex : vertex - 1;
       });
       return newEdge;
     });
     console.log(this.edges);
-
-    delete this.vertices[indexToDelete];
+    this.vertices.splice(indexToDelete, 1);
   }
 
   addTransformation(transformation) {
