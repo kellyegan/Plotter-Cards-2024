@@ -141,7 +141,10 @@ function keyPressed() {
       saveJSON(currentModelMesh, currentModelName);
       break;
     case "d":
-      currentModelMesh.deleteVertex(4);
+      currentModelMesh.deleteVertex([
+        127, 129, 128, 130, 131, 251, 252, 249, 250, 248, 118, 122, 120, 126,
+        124, 248, 236, 239, 245, 247, 241,
+      ]);
       break;
   }
 }

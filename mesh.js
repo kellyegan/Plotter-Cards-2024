@@ -33,29 +33,34 @@ class Mesh {
     });
   }
 
-  deleteVertex(indexToDelete) {
-    console.log(indexToDelete);
-    console.log(this.edges);
-    this.edges = this.edges.filter((edge) => {
-      let keepEdge = true;
-      edge.forEach((vertexIndex) => {
-        if (vertexIndex === indexToDelete) {
-          keepEdge = false;
-          return;
-        }
-      });
-      return keepEdge;
-    });
+  deleteVertex(verticesToDelete) {
+    //Sort vertices in decending order
+    verticesToDelete.sort((a, b) => b - a);
 
-    console.log(this.edges);
-    this.edges = this.edges.map((edge) => {
-      const newEdge = edge.map((vertex) => {
-        return vertex < indexToDelete ? vertex : vertex - 1;
+    verticesToDelete.forEach((vertexToDelete) => {
+      //Delete edges containing the vertices
+      this.edges = this.edges.filter((edge) => {
+        let keepEdge = true;
+        edge.forEach((vertexIndex) => {
+          if (vertexIndex === vertexToDelete) {
+            keepEdge = false;
+            return;
+          }
+        });
+        return keepEdge;
       });
-      return newEdge;
+
+      console.log(this.edges);
+      this.edges = this.edges.map((edge) => {
+        const newEdge = edge.map((vertex) => {
+          return vertex < vertexToDelete ? vertex : vertex - 1;
+        });
+        return newEdge;
+      });
+
+      //Delete the vertex
+      this.vertices.splice(vertexToDelete, 1);
     });
-    console.log(this.edges);
-    this.vertices.splice(indexToDelete, 1);
   }
 
   addTransformation(transformation) {
