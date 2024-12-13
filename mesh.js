@@ -278,12 +278,22 @@ class Scene {
   }
 
   scale(x, y, z) {
-    let translation = math.matrix([
+    let scale = math.matrix([
       [x, 0, 0, 0],
       [0, y, 0, 0],
       [0, 0, z, 0],
       [0, 0, 0, 1],
     ]);
+
+    this.transform = math.multiply(this.transform, scale);
+  }
+
+  pushMatrix() {
+    this.stack.push(this.transform);
+  }
+
+  popMatrix() {
+    this.transform = this.stack.pop();
   }
 }
 
@@ -296,6 +306,17 @@ class Polyline extends Mesh {
     if (this.vertices.length > 1) {
       this.edges.push([this.vertices.length - 2, this.vertices.length - 1]);
     }
+  }
+}
+
+class Line extends Mesh {
+  constructor(x1, y1, z1, x2, y2, z2) {
+    super();
+    this.vertices = [
+      [x1, y1, z1, 1],
+      [x2, y2, z2, 1],
+    ];
+    this.edges = [[0, 1]];
   }
 }
 
