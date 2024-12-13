@@ -32,6 +32,7 @@ function setup() {
   models = [
     "Solids-Bauble1.stl",
     "Solids-Bauble2.stl",
+    "Solids-Cube.stl",
     "Solids-UVStar.stl",
     "Solids-CubeStar1.stl",
     "Solids-HerringboneStar1.stl",
