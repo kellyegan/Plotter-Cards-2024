@@ -117,6 +117,7 @@ function draw() {
     scene.rotateX(xAngle);
     scene.rotateY(yAngle);
     const s = 3;
+
     scene.add(currentModelMesh);
 
     //Stereo render
