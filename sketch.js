@@ -30,29 +30,29 @@ function setup() {
   yStart = 0;
 
   models = [
-    "Solids-Bauble1.stl",
-    "Solids-Bauble2.stl",
-    "Solids-Cube.stl",
-    "Solids-UVStar.stl",
-    "Solids-CubeStar1.stl",
-    "Solids-HerringboneStar1.stl",
-    "Solids-HerringboneStar2.stl",
-    "Solids-IcoStar1.stl",
-    "Solids-IcoStar2.stl",
-    "Solids-RhombicTriacontahedronStar.stl",
-    "Solids-Star8Points.stl",
-    "Solids-TriakisIcosahedron.stl",
-    "Solids-TruncatedDodecahedron.stl",
-    "Solids-TruncatedDodecahedronMorph.stl",
-    "Solids-TruncatedDodecahedronMorphStar1.stl",
-    "Solids-TruncatedDodecahedronMorphStar2.stl",
-    "Solids-TruncatedDodecahedronMorphStar3.stl",
-    "Solids-TruncatedDodecahedronStar1.stl",
-    "Solids-TruncatedDodecahedronStar2.stl",
+    "Solids-Bauble1",
+    "Solids-Bauble2",
+    "Solids-Cube",
+    "Solids-UVStar",
+    "Solids-CubeStar1",
+    "Solids-HerringboneStar1",
+    "Solids-HerringboneStar2",
+    "Solids-IcoStar1",
+    "Solids-IcoStar2",
+    "Solids-RhombicTriacontahedronStar",
+    "Solids-Star8Points",
+    "Solids-TriakisIcosahedron",
+    "Solids-TruncatedDodecahedron",
+    "Solids-TruncatedDodecahedronMorph",
+    "Solids-TruncatedDodecahedronMorphStar1",
+    "Solids-TruncatedDodecahedronMorphStar2",
+    "Solids-TruncatedDodecahedronMorphStar3",
+    "Solids-TruncatedDodecahedronStar1",
+    "Solids-TruncatedDodecahedronStar2",
   ];
 
   modelIndex = 0;
-  loadSTLModel(modelIndex);
+  loadJSONModel(modelIndex);
 
   leftCamera = new WeakPerspectiveCamera(-eyeSpacing / 2, 0.02, -3);
   rightCamera = new WeakPerspectiveCamera(eyeSpacing / 2, 0.02, -3);
@@ -117,13 +117,13 @@ function keyPressed() {
     case RIGHT_ARROW:
       modelIndex = (modelIndex + 1) % models.length;
       console.log(modelIndex);
-      loadSTLModel(modelIndex);
+      loadJSONModel(modelIndex);
       break;
     case LEFT_ARROW:
       modelIndex--;
       if (modelIndex < 0) modelIndex = models.length - 1;
       console.log(modelIndex);
-      loadSTLModel(modelIndex);
+      loadJSONModel(modelIndex);
       break;
   }
 
@@ -142,8 +142,7 @@ function keyPressed() {
       break;
     case "d":
       currentModelMesh.deleteVertex([
-        127, 129, 128, 130, 131, 251, 252, 249, 250, 248, 118, 122, 120, 126,
-        124, 248, 236, 239, 245, 247, 241,
+        123, 128, 133, 138, 135, 140, 144, 70, 72, 66, 68, 64,
       ]);
       break;
   }
@@ -151,17 +150,35 @@ function keyPressed() {
 
 function loadSTLModel(index) {
   newModelLoaded = false;
-  currentModelName = models[index].split(".")[0];
-  loadModel("models/" + models[index], onModelLoaded, onModelFailed);
-  console.log(`Loading ${currentModelName}`);
+  currentModelName = models[index];
+  loadModel(`models/${models[index]}.stl`, onModelLoaded, onModelFailed);
+  console.log(`Loading ${models[index]}`);
+}
+
+function loadJSONModel(index) {
+  newModelLoaded = false;
+  currentModelName = models[index];
+  loadJSON(`json/${models[index]}.json`, onJSONLoaded, onJSONFailed);
+  console.log(`Loading ${models[index]}`);
 }
 
 function onModelLoaded(modelData) {
-  console.log("Loaded!");
+  console.log("Loaded STL!");
   currentModelMesh = createMeshFromModel(modelData);
   newModelLoaded = true;
 }
 
 function onModelFailed(error) {
   console.log("ERROR: " + error);
+}
+
+function onJSONLoaded(modelData) {
+  console.log("Loaded JSON!");
+  currentModelMesh = createMeshFromJSONdata(modelData);
+  newModelLoaded = true;
+}
+
+function onJSONFailed(error) {
+  console.log("Failed to load JSON. Loading STL...");
+  loadSTLModel(modelIndex);
 }
